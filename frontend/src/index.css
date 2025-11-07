@@ -1,50 +1,41 @@
 :root {
-  /* Palette variables (dark mode defaults) */
-  --color-primary: #2563EB; /* Azul ISTEC - botões principais, links, títulos */
-  --color-success: #10B981; /* Verde Sucesso - estados positivos */
-  --color-accent: #F59E0B; /* Dourado Moderno - destaques */
+  --color-primary: #2563EB;
+  --color-success: #10B981;
+  --color-accent: #F59E0B;
+  --bg-light: #F9FAFB;
+  --bg-dark: #1F2937;
+  --text-primary: #111827;
+  --text-secondary: #6B7280;
+  --white: #FFFFFF;
+  --error: #EF4444;
+}
 
-  --bg-light: #F9FAFB; /* Fundo Claro */
-  --bg-dark: #1F2937;  /* Fundo Escuro */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  --text-primary: #111827; /* Texto Principal - Preto Suave (para light mode) */
-  --text-secondary: #6B7280; /* Texto Secundário - Cinza Neutro */
-  --white: #FFFFFF; /* Branco Puro - cards e contrastes */
-  --error: #EF4444; /* Erro/Aviso */
-
-  /* runtime variables (dark theme default)
-     --bg and --text will be used by components; they get swapped in light mode below */
-  --bg: var(--bg-dark);
-  --text: var(--white);
-
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--white);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+  text-decoration: none;
+  color: inherit;
 }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-  background-color: var(--bg);
-  color: var(--text);
+button {
+  font-family: inherit;
+  cursor: pointer;
 }
 
 h1 {

@@ -1,32 +1,55 @@
 import React, { useState } from 'react'
+import './App.css'
 import Landing from './Landing'
 import BackOffice from './BackOffice'
+import Login from './components/Login'
+import Register from './components/Register'
 
 export default function App() {
-  const [page, setPage] = useState('landing') // 'landing' | 'backoffice'
+  const [page, setPage] = useState('landing') // 'landing' | 'login' | 'register' | 'backoffice'
+
+  const handleLoginSuccess = () => {
+    setPage('backoffice')
+  }
+
+  const handleSwitchToRegister = () => {
+    setPage('register')
+  }
+
+  const handleSwitchToLogin = () => {
+    setPage('login')
+  }
+
+  // Não mostrar header nas páginas de auth
+  const showHeader = page !== 'login' && page !== 'register' && page !== 'backoffice'
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Global top nav to switch pages */}
-      <header className="w-full bg-white shadow-sm">
-        <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <i className="fas fa-graduation-cap text-xl text-indigo-600" />
-            <span className="font-bold">ISTEC</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <button onClick={() => setPage('landing')} className={`px-3 py-1 rounded ${page === 'landing' ? 'bg-indigo-600 text-white' : 'text-slate-700 hover:bg-slate-100'}`}>
-              Landing
-            </button>
-            <button onClick={() => setPage('backoffice')} className={`px-3 py-1 rounded ${page === 'backoffice' ? 'bg-indigo-600 text-white' : 'text-slate-700 hover:bg-slate-100'}`}>
-              BackOffice
-            </button>
-          </div>
-        </div>
-      </header>
+    <div className="app-container">
+      {/* Global top nav - só na landing */}
+      {showHeader && (
+        <header className="app-header">
+          <nav className="app-nav">
+            <div className="app-logo">
+              <i className="fas fa-graduation-cap" />
+              <span>ISTEC Estágios</span>
+            </div>
+            <div className="app-nav-buttons">
+              <button onClick={() => setPage('login')} className="app-nav-btn primary">
+                Entrar
+              </button>
+              <button onClick={() => setPage('register')} className="app-nav-btn">
+                Registar
+              </button>
+            </div>
+          </nav>
+        </header>
+      )}
 
       <main>
-        {page === 'landing' ? <Landing /> : <BackOffice />}
+        {page === 'landing' && <Landing onNavigateToLogin={() => setPage('login')} onNavigateToRegister={() => setPage('register')} />}
+        {page === 'login' && <Login onLoginSuccess={handleLoginSuccess} onSwitchToRegister={handleSwitchToRegister} />}
+        {page === 'register' && <Register onRegisterSuccess={handleSwitchToLogin} onSwitchToLogin={handleSwitchToLogin} />}
+        {page === 'backoffice' && <BackOffice />}
       </main>
     </div>
   )

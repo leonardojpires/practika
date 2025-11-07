@@ -1,57 +1,104 @@
-@import "tailwindcss";
+/* App Global Styles */
+.app-container {
+  min-height: 100vh;
+  background: var(--white);
+}
 
-#root {
-  max-width: 1280px;
+/* App Header/Navbar */
+.app-header {
+  width: 100%;
+  background: var(--white);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.app-nav {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.app-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: bold;
+  font-size: 1.125rem;
+  color: var(--text-primary);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.app-logo i {
+  font-size: 1.5rem;
+  color: var(--color-primary);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.app-nav-buttons {
+  display: flex;
+  gap: 0.5rem;
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
-.btn {
-  background-color: var(--color-primary);
-  color: var(--white);
-  border: none;
-  padding: 0.6em 1em;
+.app-nav-btn {
+  padding: 0.5rem 1rem;
   border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  border: none;
   cursor: pointer;
+  transition: all 0.3s;
+  background: transparent;
+  color: var(--text-secondary);
 }
 
-.btn:hover {
-  filter: brightness(0.98);
+.app-nav-btn:hover {
+  background: var(--bg-light);
+  color: var(--color-primary);
+}
+
+.app-nav-btn.active {
+  background: var(--color-primary);
+  color: var(--white);
+}
+
+.app-nav-btn.active:hover {
+  background: #1e40af;
+}
+
+.app-nav-btn.primary {
+  background: var(--color-primary);
+  color: var(--white);
+}
+
+.app-nav-btn.primary:hover {
+  background: #1e40af;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .app-nav {
+    padding: 1rem;
+  }
+
+  .app-logo {
+    font-size: 1rem;
+  }
+
+  .app-logo i {
+    font-size: 1.25rem;
+  }
+
+  .app-nav-buttons {
+    gap: 0.25rem;
+  }
+
+  .app-nav-btn {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.875rem;
+  }
 }

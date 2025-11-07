@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
+import './styles/BackOffice.css'
 
 const initialStats = [
-  { label: 'Empresas Ativas', value: '150', icon: 'fa-building' },
-  { label: 'Alunos Registados', value: '500', icon: 'fa-user-graduate' },
-  { label: 'Estágios Ativos', value: '320', icon: 'fa-briefcase' },
-  { label: 'Taxa de Colocação', value: '95%', icon: 'fa-chart-pie' },
+  { label: 'Empresas Ativas', value: '150', icon: 'fa-building', change: '+12%', positive: true, color: 'blue' },
+  { label: 'Alunos Registados', value: '500', icon: 'fa-user-graduate', change: '+23%', positive: true, color: 'green' },
+  { label: 'Estágios Ativos', value: '320', icon: 'fa-briefcase', change: '+8%', positive: true, color: 'amber' },
+  { label: 'Taxa de Colocação', value: '95%', icon: 'fa-chart-pie', change: '+5%', positive: true, color: 'green' },
 ]
 
 const initialRecent = [
@@ -15,14 +16,9 @@ const initialRecent = [
 ]
 
 function StatusBadge({ status }) {
-  const map = {
-    ativo: 'bg-emerald-100 text-emerald-800',
-    pendente: 'bg-amber-100 text-amber-800',
-    cancelado: 'bg-rose-100 text-rose-800',
-  }
   return (
-    <span className={`inline-flex items-center px-2.5 py-1 rounded text-sm font-semibold ${map[status] || 'bg-slate-100 text-slate-800'}`}>
-      {status === 'ativo' ? 'Ativo' : status === 'pendente' ? 'Pendente' : 'Cancelado'}
+    <span className={`status-badge ${status}`}>
+      {status === 'ativo' ? 'Ativo' : status === 'pendente' ? 'Pendente' : status === 'concluido' ? 'Concluído' : 'Cancelado'}
     </span>
   )
 }
@@ -79,113 +75,144 @@ export default function BackOffice() {
   }, [])
 
   return (
-    <div className="min-h-screen flex bg-slate-50 text-slate-900">
+    <div className="backoffice">
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-md p-6 flex flex-col">
-        <div className="logo text-xl font-bold text-indigo-600 flex items-center gap-2 mb-6">
+      <aside className="backoffice-sidebar">
+        <div className="backoffice-logo">
           <i className="fas fa-graduation-cap" />
           <span>ISTEC BackOffice</span>
         </div>
-        <ul className="flex-1 space-y-2">
-          <li>
-            <a className="flex items-center gap-3 px-3 py-2 rounded-lg bg-indigo-600 text-white font-medium" href="#">
+        <ul className="backoffice-menu">
+          <li className="backoffice-menu-item active">
+            <a href="#">
               <i className="fas fa-chart-line" /> <span>Dashboard</span>
             </a>
           </li>
-          <li>
-            <a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100" href="#">
+          <li className="backoffice-menu-item">
+            <a href="#">
               <i className="fas fa-users" /> <span>Utilizadores</span>
             </a>
           </li>
-          <li>
-            <a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100" href="#">
+          <li className="backoffice-menu-item">
+            <a href="#">
               <i className="fas fa-briefcase" /> <span>Ofertas</span>
             </a>
           </li>
-          <li>
-            <a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100" href="#">
+          <li className="backoffice-menu-item">
+            <a href="#">
               <i className="fas fa-file-alt" /> <span>Relatórios</span>
             </a>
           </li>
-          <li>
-            <a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100" href="#">
+          <li className="backoffice-menu-item">
+            <a href="#">
               <i className="fas fa-envelope" /> <span>Mensagens</span>
             </a>
           </li>
-          <li>
-            <a className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-100" href="#">
+          <li className="backoffice-menu-item">
+            <a href="#">
               <i className="fas fa-cog" /> <span>Definições</span>
             </a>
           </li>
         </ul>
-        <div className="mt-4 text-sm text-slate-500">v1.0</div>
+        
+        <div className="backoffice-user">
+          <div className="backoffice-user-info">
+            <div className="backoffice-user-avatar">
+              <i className="fas fa-user" />
+            </div>
+            <div className="backoffice-user-details">
+              <h4>Coordenação</h4>
+              <p>Admin</p>
+            </div>
+          </div>
+          <button className="backoffice-logout-btn">
+            <i className="fas fa-sign-out-alt" /> Sair
+          </button>
+        </div>
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col">
-        {/* Topbar */}
-        <div className="topbar bg-white shadow-sm sticky top-0 z-20 px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-3 bg-slate-100 rounded-lg px-3 py-2">
-              <i className="fas fa-search text-slate-500" />
-              <input className="bg-transparent outline-none text-sm" placeholder="Pesquisar..." />
-            </div>
-          </div>
-          <div className="flex items-center gap-6">
-            <i className="fas fa-bell text-slate-500" />
-            <div className="flex items-center gap-3">
-              <img src="https://i.pravatar.cc/100" alt="user" className="w-10 h-10 rounded-full" />
-              <span className="font-semibold text-indigo-700">Coordenação</span>
-            </div>
-          </div>
+      <main className="backoffice-main">
+        {/* Header */}
+        <div className="backoffice-header">
+          <h1>Painel de Controlo</h1>
+          <p>Bem-vindo ao sistema de gestão de estágios</p>
         </div>
 
-        {/* Dashboard */}
-        <section className="dashboard p-6 overflow-y-auto">
-          <h1 className="text-2xl font-bold text-indigo-800 mb-6">Painel de Controlo</h1>
-
-          {/* Cards */}
-          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-            {stats.map((s) => (
-              <div key={s.label} className="card bg-white p-4 rounded-xl shadow flex items-center justify-between">
-                <div>
-                  <h3 className="text-2xl font-bold text-indigo-600">{s.value}</h3>
-                  <p className="text-sm text-slate-500">{s.label}</p>
+        {/* Stats Grid */}
+        <div className="backoffice-stats">
+          {stats.map((s) => (
+            <div key={s.label} className="backoffice-stat-card">
+              <div className="backoffice-stat-header">
+                <h3>{s.label}</h3>
+                <div className={`backoffice-stat-icon ${s.color}`}>
+                  <i className={`fas ${s.icon}`} />
                 </div>
-                <i className={`fas ${s.icon} text-2xl text-emerald-500`} />
               </div>
-            ))}
-          </div>
+              <div className="backoffice-stat-value">{s.value}</div>
+              <div className={`backoffice-stat-change ${s.positive ? 'positive' : 'negative'}`}>
+                <i className={`fas fa-arrow-${s.positive ? 'up' : 'down'}`} />
+                <span>{s.change} vs mês anterior</span>
+              </div>
+            </div>
+          ))}
+        </div>
 
-          {/* Table */}
-          <div className="table-section bg-white rounded-xl shadow p-4">
-            <h2 className="text-lg font-semibold text-indigo-800 mb-4">Estágios Recentes</h2>
-            <div className="overflow-auto">
-              <table className="min-w-full">
-                <thead>
-                  <tr className="text-sm text-slate-600 text-left">
-                    <th className="px-4 py-2">Aluno</th>
-                    <th className="px-4 py-2">Empresa</th>
-                    <th className="px-4 py-2">Área</th>
-                    <th className="px-4 py-2">Estado</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentInternships.map((row) => (
-                    <tr key={row.student} className="hover:bg-slate-50">
-                      <td className="px-4 py-3">{row.student}</td>
-                      <td className="px-4 py-3">{row.company}</td>
-                      <td className="px-4 py-3">{row.area}</td>
-                      <td className="px-4 py-3"><StatusBadge status={row.status} /></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+        {/* Table Section */}
+        <div className="backoffice-section">
+          <div className="backoffice-section-header">
+            <h2>Estágios Recentes</h2>
+            <div className="backoffice-table-actions">
+              <input 
+                type="text" 
+                className="backoffice-search" 
+                placeholder="Pesquisar..." 
+              />
+              <button className="backoffice-filter-btn">
+                <i className="fas fa-filter" />
+                <span>Filtros</span>
+              </button>
+              <button className="backoffice-add-btn">
+                <i className="fas fa-plus" />
+                <span>Novo Estágio</span>
+              </button>
             </div>
           </div>
-        </section>
-
-        <footer className="bg-white text-slate-500 text-center py-4 border-t">© {new Date().getFullYear()} ISTEC - BackOffice Estágios. Todos os direitos reservados.</footer>
+          
+          <div className="backoffice-table-container">
+            <table className="backoffice-table">
+              <thead>
+                <tr>
+                  <th>Aluno</th>
+                  <th>Empresa</th>
+                  <th>Área</th>
+                  <th>Estado</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentInternships.map((row, idx) => (
+                  <tr key={idx}>
+                    <td>{row.student}</td>
+                    <td>{row.company}</td>
+                    <td>{row.area}</td>
+                    <td><StatusBadge status={row.status} /></td>
+                    <td>
+                      <div className="backoffice-action-btns">
+                        <button className="backoffice-action-btn edit" title="Editar">
+                          <i className="fas fa-edit" />
+                        </button>
+                        <button className="backoffice-action-btn delete" title="Eliminar">
+                          <i className="fas fa-trash" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </main>
     </div>
   )
