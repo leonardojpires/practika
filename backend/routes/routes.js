@@ -1,10 +1,18 @@
 // routes.js
 import express from "express";
-import { Aluno, Professor, Empresa, Estagio, Candidatura } from "../models/models.js";
+import {
+  Aluno,
+  Professor,
+  Empresa,
+  Estagio,
+  Candidatura,
+  OfertaEstagio,
+} from "../models/models.js";
 
 const router = express.Router();
 
-// Listar todos os Alunos
+// --- ALUNOS (CRUD) ------------------------------------------------------
+// Listar todos os alunos
 router.get("/alunos", async (req, res) => {
   try {
     const alunos = await Aluno.find();
@@ -14,7 +22,53 @@ router.get("/alunos", async (req, res) => {
   }
 });
 
-// Listar todos os Professores
+// Criar aluno
+router.post("/alunos", async (req, res) => {
+  try {
+    const aluno = await Aluno.create(req.body);
+    res.status(201).json(aluno);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// Obter aluno por id
+router.get("/alunos/:id", async (req, res) => {
+  try {
+    const aluno = await Aluno.findById(req.params.id);
+    if (!aluno) return res.status(404).json({ error: "Aluno não encontrado" });
+    res.json(aluno);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Atualizar aluno
+router.put("/alunos/:id", async (req, res) => {
+  try {
+    const aluno = await Aluno.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!aluno) return res.status(404).json({ error: "Aluno não encontrado" });
+    res.json(aluno);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// Remover aluno
+router.delete("/alunos/:id", async (req, res) => {
+  try {
+    const aluno = await Aluno.findByIdAndDelete(req.params.id);
+    if (!aluno) return res.status(404).json({ error: "Aluno não encontrado" });
+    res.json({ message: "Aluno removido" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- PROFESSORES (CRUD) -------------------------------------------------
 router.get("/professores", async (req, res) => {
   try {
     const professores = await Professor.find();
@@ -24,7 +78,52 @@ router.get("/professores", async (req, res) => {
   }
 });
 
-// Listar todas as Empresas
+router.post("/professores", async (req, res) => {
+  try {
+    const professor = await Professor.create(req.body);
+    res.status(201).json(professor);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+router.get("/professores/:id", async (req, res) => {
+  try {
+    const professor = await Professor.findById(req.params.id);
+    if (!professor)
+      return res.status(404).json({ error: "Professor não encontrado" });
+    res.json(professor);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.put("/professores/:id", async (req, res) => {
+  try {
+    const professor = await Professor.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!professor)
+      return res.status(404).json({ error: "Professor não encontrado" });
+    res.json(professor);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+router.delete("/professores/:id", async (req, res) => {
+  try {
+    const professor = await Professor.findByIdAndDelete(req.params.id);
+    if (!professor)
+      return res.status(404).json({ error: "Professor não encontrado" });
+    res.json({ message: "Professor removido" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- EMPRESAS (CRUD + validar) -----------------------------------------
 router.get("/empresas", async (req, res) => {
   try {
     const empresas = await Empresa.find();
@@ -34,7 +133,169 @@ router.get("/empresas", async (req, res) => {
   }
 });
 
-// Listar todos os Estágios com aluno e professor populados
+router.post("/empresas", async (req, res) => {
+  try {
+    const empresa = await Empresa.create(req.body);
+    res.status(201).json(empresa);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+router.get("/empresas/:id", async (req, res) => {
+  try {
+    const empresa = await Empresa.findById(req.params.id);
+    if (!empresa) return res.status(404).json({ error: "Empresa não encontrada" });
+    res.json(empresa);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Validar uma empresa (gestor irá usar)
+router.patch("/empresas/:id/validar", async (req, res) => {
+  try {
+    const empresa = await Empresa.findByIdAndUpdate(
+      req.params.id,
+      { validada: true },
+      { new: true }
+    );
+    if (!empresa) return res.status(404).json({ error: "Empresa não encontrada" });
+    res.json(empresa);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.put("/empresas/:id", async (req, res) => {
+  try {
+    const empresa = await Empresa.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!empresa) return res.status(404).json({ error: "Empresa não encontrada" });
+    res.json(empresa);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+router.delete("/empresas/:id", async (req, res) => {
+  try {
+    const empresa = await Empresa.findByIdAndDelete(req.params.id);
+    if (!empresa) return res.status(404).json({ error: "Empresa não encontrada" });
+    res.json({ message: "Empresa removida" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- OFERTAS DE ESTÁGIO (CRUD) -----------------------------------------
+router.get("/ofertas", async (req, res) => {
+  try {
+    const ofertas = await OfertaEstagio.find().populate("empresa", "nome email nif");
+    res.json(ofertas);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post("/ofertas", async (req, res) => {
+  try {
+    const oferta = await OfertaEstagio.create(req.body);
+    res.status(201).json(oferta);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+router.get("/ofertas/:id", async (req, res) => {
+  try {
+    const oferta = await OfertaEstagio.findById(req.params.id).populate("empresa", "nome email nif");
+    if (!oferta) return res.status(404).json({ error: "Oferta não encontrada" });
+    res.json(oferta);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.put("/ofertas/:id", async (req, res) => {
+  try {
+    const oferta = await OfertaEstagio.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!oferta) return res.status(404).json({ error: "Oferta não encontrada" });
+    res.json(oferta);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+router.delete("/ofertas/:id", async (req, res) => {
+  try {
+    const oferta = await OfertaEstagio.findByIdAndDelete(req.params.id);
+    if (!oferta) return res.status(404).json({ error: "Oferta não encontrada" });
+    res.json({ message: "Oferta removida" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Ofertas de uma empresa
+router.get("/empresas/:id/ofertas", async (req, res) => {
+  try {
+    const ofertas = await OfertaEstagio.find({ empresa: req.params.id });
+    res.json(ofertas);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- CANDIDATURAS ------------------------------------------------------
+// Listar candidaturas (com populates)
+router.get("/candidaturas", async (req, res) => {
+  try {
+    const candidaturas = await Candidatura.find()
+      .populate("aluno", "nome email curso")
+      .populate({ path: "ofertaEstagio", populate: { path: "empresa" } });
+    res.json(candidaturas);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Criar candidatura
+router.post("/candidaturas", async (req, res) => {
+  try {
+    // esperar body: { aluno: id, ofertaEstagio: id }
+    const candidatura = await Candidatura.create(req.body);
+    res.status(201).json(candidatura);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// Atualizar estado da candidatura (ACEITE / RECUSADO / PENDENTE)
+router.patch("/candidaturas/:id/estado", async (req, res) => {
+  try {
+    const { estado } = req.body; // espera-se string
+    if (!["PENDENTE", "ACEITE", "RECUSADO"].includes(estado))
+      return res.status(400).json({ error: "Estado inválido" });
+
+    const candidatura = await Candidatura.findByIdAndUpdate(
+      req.params.id,
+      { estado },
+      { new: true }
+    );
+    if (!candidatura) return res.status(404).json({ error: "Candidatura não encontrada" });
+    res.json(candidatura);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- ESTÁGIOS ----------------------------------------------------------
 router.get("/estagios", async (req, res) => {
   try {
     const estagios = await Estagio.find()
@@ -46,17 +307,45 @@ router.get("/estagios", async (req, res) => {
   }
 });
 
-// Listar todas as Candidaturas com aluno e oferta populados
-router.get("/candidaturas", async (req, res) => {
+router.post("/estagios", async (req, res) => {
   try {
-    const candidaturas = await Candidatura.find()
+    const estagio = await Estagio.create(req.body);
+    res.status(201).json(estagio);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+router.get("/estagios/:id", async (req, res) => {
+  try {
+    const estagio = await Estagio.findById(req.params.id)
       .populate("aluno", "nome email curso")
-      .populate({
-        path: "ofertaEstagio",
-        select: "titulo descricao duracao local",
-        populate: { path: "empresa", select: "nome email nif" }
-      });
-    res.json(candidaturas);
+      .populate("professorOrientador", "nome email departamento");
+    if (!estagio) return res.status(404).json({ error: "Estágio não encontrado" });
+    res.json(estagio);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.put("/estagios/:id", async (req, res) => {
+  try {
+    const estagio = await Estagio.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!estagio) return res.status(404).json({ error: "Estágio não encontrado" });
+    res.json(estagio);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+router.delete("/estagios/:id", async (req, res) => {
+  try {
+    const estagio = await Estagio.findByIdAndDelete(req.params.id);
+    if (!estagio) return res.status(404).json({ error: "Estágio não encontrado" });
+    res.json({ message: "Estágio removido" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
