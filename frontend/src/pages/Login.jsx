@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/Auth.css';
 
-export default function Login({ onLoginSuccess, onSwitchToRegister }) {
+export default function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,7 +23,7 @@ export default function Login({ onLoginSuccess, onSwitchToRegister }) {
       // Usa o login do AuthContext (Firebase)
       await login(email, password);
       setLoading(false);
-      if (onLoginSuccess) onLoginSuccess();
+      navigate('/backoffice');
     } catch (err) {
       setLoading(false);
       setError(err.message || 'Erro no login');
@@ -120,7 +122,7 @@ export default function Login({ onLoginSuccess, onSwitchToRegister }) {
             <button
               type="button"
               className="auth-link"
-              onClick={() => onSwitchToRegister && onSwitchToRegister()}
+              onClick={() => navigate('/register')}
             >
               Regista-te aqui
             </button>

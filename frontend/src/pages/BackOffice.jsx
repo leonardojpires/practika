@@ -1,6 +1,7 @@
 ﻿import React, { useEffect, useState } from 'react'
-import { useAuth } from './context/AuthContext'
-import './styles/BackOffice.css'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import '../styles/BackOffice.css'
 
 const API_URL = import.meta.env.VITE_API_URL
 
@@ -17,10 +18,11 @@ function StatusBadge({ status }) {
   )
 }
 
-export default function BackOffice({ onNavigateHome, onLogout }) {
-  const { userData, user } = useAuth()
+export default function BackOffice() {
+  const navigate = useNavigate()
+  const { userData, user, logout } = useAuth()
   const [activeTab, setActiveTab] = useState('dashboard')
-  const [stats, setStats] = useState({ alunos: 0, professores: 0, empresas: 0, estagios: 0, ofertas: 0, candidaturas: 0 })
+  const  [stats, setStats] = useState({ alunos: 0, professores: 0, empresas: 0, estagios: 0, ofertas: 0, candidaturas: 0 })
   
   console.log('BackOffice render - activeTab:', activeTab, 'stats:', stats)
   
@@ -252,7 +254,7 @@ export default function BackOffice({ onNavigateHome, onLogout }) {
             <h1>Painel de Controlo</h1>
           </div>
           <div className="backoffice-topbar-right">
-            <button className="backoffice-nav-btn" onClick={onNavigateHome} title="Voltar ao Início">
+            <button className="backoffice-nav-btn" onClick={() => navigate('/')} title="Voltar ao Início">
               <i className="fas fa-home"></i>
               <span>Início</span>
             </button>
@@ -268,7 +270,7 @@ export default function BackOffice({ onNavigateHome, onLogout }) {
                 <span className="backoffice-user-name">{userData?.nome || 'Utilizador'}</span>
                 <span className="backoffice-user-role">{userData?.role || 'Admin'}</span>
               </div>
-              <button className="backoffice-user-dropdown" onClick={onLogout} title="Sair">
+              <button className="backoffice-user-dropdown" onClick={async () => { await logout(); navigate('/'); }} title="Sair">
                 <i className="fas fa-sign-out-alt" />
               </button>
             </div>

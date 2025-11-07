@@ -1,43 +1,32 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import '../styles/Auth.css';
 
-export default function Register({ onRegisterSuccess, onSwitchToLogin }) {
-  const [name, setName] = useState('');
+export default function Register() {
+  const navigate = useNavigate();
+  const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirm, setConfirm] = useState('');
   const [curso, setCurso] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { registerAluno } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
 
-    if (!name) return setError('Preenche o nome.');
-    if (!email) return setError('Preenche o email.');
-    if (!password) return setError('Preenche a palavra-passe.');
-    if (password !== confirm) return setError('As palavras-passe não coincidem.');
-    if (!curso) return setError('Preenche o curso.');
+    if (!nome.trim()) return setError('Preencha o nome.');
+    if (!email.trim()) return setError('Preencha o email.');
+    if (!curso.trim()) return setError('Preencha o curso.');
+    if (!password) return setError('Preencha a palavra-passe.');
 
     setLoading(true);
     try {
-      const dados = { nome: name, email, password, role: 'Aluno', curso };
-      console.log('Dados enviados para registo:', dados);
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dados),
-      });
-
-      if (!res.ok) {
-        const payload = await res.json().catch(() => ({}));
-        throw new Error(payload.message || 'Erro no registo');
-      }
-
-      const data = await res.json();
+      await registerAluno({ nome, email, password, curso });
       setLoading(false);
-      if (onRegisterSuccess) onRegisterSuccess(data);
+      navigate('/backoffice');
     } catch (err) {
       setLoading(false);
       setError(err.message || 'Erro no registo');
@@ -87,21 +76,10 @@ export default function Register({ onRegisterSuccess, onSwitchToLogin }) {
             <label className="auth-label">
               Nome
               <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
                 className="auth-input"
                 placeholder="O teu nome completo"
-                required
-              />
-            </label>
-
-            <label className="auth-label">
-              Curso
-              <input
-                value={curso}
-                onChange={(e) => setCurso(e.target.value)}
-                className="auth-input"
-                placeholder="O teu curso"
                 required
               />
             </label>
@@ -119,6 +97,18 @@ export default function Register({ onRegisterSuccess, onSwitchToLogin }) {
             </label>
 
             <label className="auth-label">
+              Curso
+              <input
+                type="text"
+                value={curso}
+                onChange={(e) => setCurso(e.target.value)}
+                className="auth-input"
+                placeholder="Engenharia Informática"
+                required
+              />
+            </label>
+
+            <label className="auth-label">
               Palavra-passe
               <input
                 type="password"
@@ -126,18 +116,6 @@ export default function Register({ onRegisterSuccess, onSwitchToLogin }) {
                 onChange={(e) => setPassword(e.target.value)}
                 className="auth-input"
                 placeholder="••••••••"
-                required
-              />
-            </label>
-
-            <label className="auth-label">
-              Confirma palavra-passe
-              <input
-                type="password"
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                className="auth-input"
-                placeholder="Repete a palavra-passe"
                 required
               />
             </label>
@@ -152,7 +130,7 @@ export default function Register({ onRegisterSuccess, onSwitchToLogin }) {
             <button
               type="button"
               className="auth-link"
-              onClick={() => onSwitchToLogin && onSwitchToLogin()}
+              onClick={() => navigate('/login')}
             >
               Entra aqui
             </button>

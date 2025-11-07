@@ -1,7 +1,10 @@
-import React from "react";
-import './styles/Landing.css';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../styles/Landing.css';
 
-export default function Landing({ onNavigateToLogin, onNavigateToRegister }) {
+export default function Landing() {
+  const navigate = useNavigate();
+  
   return (
     <div className="landing-page">
       <main>
@@ -11,7 +14,7 @@ export default function Landing({ onNavigateToLogin, onNavigateToRegister }) {
             <h1><i className="fas fa-graduation-cap"></i>Practika</h1>
             <p>A plataforma que conecta alunos, empresas e professores orientadores num único sistema integrado de gestão de estágios curriculares e profissionais.</p>
             <div className="landing-hero-buttons">
-              <button onClick={onNavigateToRegister} className="landing-btn landing-btn-primary">Registar Agora</button>
+              <button onClick={() => navigate('/register')} className="landing-btn landing-btn-primary">Registar Agora</button>
               <a href="#features" className="landing-btn landing-btn-secondary">Saber Mais</a>
             </div>
           </div>
@@ -127,8 +130,8 @@ export default function Landing({ onNavigateToLogin, onNavigateToRegister }) {
             <h2>Pronto para começar?</h2>
             <p>Junte-se à plataforma que está a transformar a gestão de estágios</p>
             <div className="landing-hero-buttons">
-              <button onClick={onNavigateToRegister} className="landing-btn landing-btn-primary">Sou Aluno</button>
-              <button onClick={onNavigateToRegister} className="landing-btn landing-btn-secondary">Sou Empresa</button>
+              <button onClick={() => navigate('/register')} className="landing-btn landing-btn-primary">Sou Aluno</button>
+              <button onClick={() => navigate('/register')} className="landing-btn landing-btn-secondary">Sou Empresa</button>
             </div>
           </div>
         </section>
