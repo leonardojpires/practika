@@ -6,6 +6,7 @@ const userAccountSchema = new Schema(
   {
     nome: { type: String, required: true },
     email: { type: String, required: true, unique: true },
+    firebaseUid: { type: String, unique: true, sparse: true },
   },
   { discriminatorKey: "role", timestamps: true }
 );

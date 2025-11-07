@@ -1,58 +1,34 @@
-import { useEffect, useState } from "react";
-import "./App.css";
+import React, { useState } from 'react'
+import Landing from './Landing'
+import BackOffice from './BackOffice'
 
-function App() {
-  const [alunos, setAlunos] = useState([]);
-  const [professores, setProfessores] = useState([]);
-  const [empresas, setEmpresas] = useState([]);
-
-  useEffect(() => {
-    // Buscar Alunos
-    fetch("http://localhost:5000/api/alunos")
-      .then(res => res.json())
-      .then(data => setAlunos(data));
-
-    // Buscar Professores
-    fetch("http://localhost:5000/api/professores")
-      .then(res => res.json())
-      .then(data => setProfessores(data));
-
-    // Buscar Empresas
-    fetch("http://localhost:5000/api/empresas")
-      .then(res => res.json())
-      .then(data => setEmpresas(data));
-  }, []);
+export default function App() {
+  const [page, setPage] = useState('landing') // 'landing' | 'backoffice'
 
   return (
-    <div className="p-10">
-      <h1 className="text-3xl font-bold mb-5">Alunos</h1>
-      <ul className="mb-10">
-        {alunos.map(aluno => (
-          <li key={aluno._id}>
-            <strong>{aluno.nome}</strong> - {aluno.curso} - {aluno.competencias}
-          </li>
-        ))}
-      </ul>
+    <div className="min-h-screen bg-white">
+      {/* Global top nav to switch pages */}
+      <header className="w-full bg-white shadow-sm">
+        <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <i className="fas fa-graduation-cap text-xl text-indigo-600" />
+            <span className="font-bold">ISTEC</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <button onClick={() => setPage('landing')} className={`px-3 py-1 rounded ${page === 'landing' ? 'bg-indigo-600 text-white' : 'text-slate-700 hover:bg-slate-100'}`}>
+              Landing
+            </button>
+            <button onClick={() => setPage('backoffice')} className={`px-3 py-1 rounded ${page === 'backoffice' ? 'bg-indigo-600 text-white' : 'text-slate-700 hover:bg-slate-100'}`}>
+              BackOffice
+            </button>
+          </div>
+        </div>
+      </header>
 
-      <h1 className="text-3xl font-bold mb-5">Professores</h1>
-      <ul className="mb-10">
-        {professores.map(prof => (
-          <li key={prof._id}>
-            <strong>{prof.nome}</strong> - {prof.departamento}
-          </li>
-        ))}
-      </ul>
-
-      <h1 className="text-3xl font-bold mb-5">Empresas</h1>
-      <ul className="mb-10">
-        {empresas.map(emp => (
-          <li key={emp._id}>
-            <strong>{emp.nome}</strong> - {emp.nif} - {emp.validada ? "Validada" : "Não validada"}
-          </li>
-        ))}
-      </ul>
+      <main>
+        {page === 'landing' ? <Landing /> : <BackOffice />}
+      </main>
     </div>
-  );
+  )
 }
 
-export default App;

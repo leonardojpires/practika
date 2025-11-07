@@ -42,3 +42,16 @@
 .read-the-docs {
   color: #888;
 }
+
+.btn {
+  background-color: var(--color-primary);
+  color: var(--white);
+  border: none;
+  padding: 0.6em 1em;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  filter: brightness(0.98);
+}
