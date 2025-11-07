@@ -8,7 +8,7 @@ export default function Landing({ onNavigateToLogin, onNavigateToRegister }) {
         {/* Hero */}
         <section id="home" className="landing-hero">
           <div className="landing-hero-content">
-            <h1><i className="fas fa-graduation-cap"></i>Gestor de Estágios ISTEC</h1>
+            <h1><i className="fas fa-graduation-cap"></i>Practika</h1>
             <p>A plataforma que conecta alunos, empresas e professores orientadores num único sistema integrado de gestão de estágios curriculares e profissionais.</p>
             <div className="landing-hero-buttons">
               <button onClick={onNavigateToRegister} className="landing-btn landing-btn-primary">Registar Agora</button>

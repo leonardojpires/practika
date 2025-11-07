@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 import '../styles/Auth.css';
 
 export default function Login({ onLoginSuccess, onSwitchToRegister }) {
@@ -6,6 +7,7 @@ export default function Login({ onLoginSuccess, onSwitchToRegister }) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -16,21 +18,10 @@ export default function Login({ onLoginSuccess, onSwitchToRegister }) {
 
     setLoading(true);
     try {
-      // Usa o endpoint correto do backend
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!res.ok) {
-        const payload = await res.json().catch(() => ({}));
-        throw new Error(payload.message || 'Erro no login');
-      }
-
-      const data = await res.json();
+      // Usa o login do AuthContext (Firebase)
+      await login(email, password);
       setLoading(false);
-      if (onLoginSuccess) onLoginSuccess(data);
+      if (onLoginSuccess) onLoginSuccess();
     } catch (err) {
       setLoading(false);
       setError(err.message || 'Erro no login');
