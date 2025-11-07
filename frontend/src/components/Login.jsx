@@ -7,7 +7,7 @@ export default function Login({ onLoginSuccess, onSwitchToRegister }) {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { login } = useAuth();
+  const { login, resetPassword } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,18 +18,8 @@ export default function Login({ onLoginSuccess, onSwitchToRegister }) {
 
     setLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!res.ok) {
-        const payload = await res.json().catch(() => ({}));
-        throw new Error(payload.message || 'Erro no login');
-      }
-
-      const data = await res.json();
+      // Usa o login do AuthContext (Firebase)
+      await login(email, password);
       setLoading(false);
       if (onLoginSuccess) onLoginSuccess();
     } catch (err) {
@@ -104,6 +94,24 @@ export default function Login({ onLoginSuccess, onSwitchToRegister }) {
 
             <button type="submit" className="auth-button" disabled={loading}>
               {loading ? 'A processar...' : 'Entrar'}
+            </button>
+
+            <button 
+              type="button" 
+              className="auth-link-button"
+              onClick={async()=>{
+                if(!email){ setError('Introduz o email para recuperar a palavra-passe.'); return; }
+                try{ 
+                  await resetPassword(email); 
+                  setError(null); 
+                  alert('Enviámos um email para repor a palavra-passe.'); 
+                }
+                catch(e){ 
+                  setError(e.message || 'Não foi possível enviar o email de reposição.'); 
+                }
+              }}
+            >
+              Esqueceste a palavra‑passe?
             </button>
           </form>
 

@@ -88,7 +88,17 @@
   background: #dc2626;
 }
 
-/* Auth Modal */
+/* Auth Page (substitui o modal) */
+.auth-page {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background: var(--bg-light);
+}
+
+/* Auth Modal (manter para compatibilidade se necessário) */
 .auth-modal-overlay {
   position: fixed;
   top: 0;

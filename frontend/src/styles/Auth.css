@@ -213,6 +213,22 @@
   text-decoration: underline;
 }
 
+.auth-link-button {
+  background: none;
+  border: 0;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.875rem;
+  text-align: center;
+  transition: all 0.2s ease;
+  padding: 0.5rem;
+}
+
+.auth-link-button:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
 .auth-error {
   background: rgba(239, 68, 68, 0.08);
   color: var(--error);

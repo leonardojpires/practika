@@ -1,7 +1,7 @@
 /* BackOffice Dashboard Styles */
 .backoffice {
   min-height: 100vh;
-  background: var(--white);
+  background: #f9fafb;
   display: flex;
 }
 
@@ -73,7 +73,7 @@
 .backoffice-main {
   margin-left: 260px;
   flex: 1;
-  background: var(--white);
+  background: #f9fafb;
 }
 
 /* Topbar */
@@ -100,6 +100,31 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
+}
+
+.backoffice-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.backoffice-nav-btn:hover {
+  background: var(--color-primary);
+  color: var(--white);
+  border-color: var(--color-primary);
+}
+
+.backoffice-nav-btn i {
+  font-size: 1rem;
 }
 
 .backoffice-notification-btn {
@@ -206,9 +231,10 @@
 }
 
 .backoffice-stat-card {
-  background: var(--white);
+  background: #f9fafb;
   padding: 1.5rem;
   border-radius: 15px;
+  border: 1px solid #e5e7eb;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: all 0.3s;
 }

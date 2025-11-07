@@ -17,10 +17,12 @@ function StatusBadge({ status }) {
   )
 }
 
-export default function BackOffice() {
+export default function BackOffice({ onNavigateHome, onLogout }) {
   const { userData, user } = useAuth()
   const [activeTab, setActiveTab] = useState('dashboard')
   const [stats, setStats] = useState({ alunos: 0, professores: 0, empresas: 0, estagios: 0, ofertas: 0, candidaturas: 0 })
+  
+  console.log('BackOffice render - activeTab:', activeTab, 'stats:', stats)
   
   const [alunos, setAlunos] = useState([])
   const [professores, setProfessores] = useState([])
@@ -250,6 +252,10 @@ export default function BackOffice() {
             <h1>Painel de Controlo</h1>
           </div>
           <div className="backoffice-topbar-right">
+            <button className="backoffice-nav-btn" onClick={onNavigateHome} title="Voltar ao Início">
+              <i className="fas fa-home"></i>
+              <span>Início</span>
+            </button>
             <button className="backoffice-notification-btn">
               <i className="fas fa-bell" />
               <span className="backoffice-notification-badge">3</span>
@@ -259,11 +265,11 @@ export default function BackOffice() {
                 <i className="fas fa-user" />
               </div>
               <div className="backoffice-user-details">
-                <span className="backoffice-user-name">Coordenação</span>
-                <span className="backoffice-user-role">Admin</span>
+                <span className="backoffice-user-name">{userData?.nome || 'Utilizador'}</span>
+                <span className="backoffice-user-role">{userData?.role || 'Admin'}</span>
               </div>
-              <button className="backoffice-user-dropdown">
-                <i className="fas fa-chevron-down" />
+              <button className="backoffice-user-dropdown" onClick={onLogout} title="Sair">
+                <i className="fas fa-sign-out-alt" />
               </button>
             </div>
           </div>
@@ -271,31 +277,69 @@ export default function BackOffice() {
 
         {/* Content */}
         <div className="backoffice-content">
-          <p className="backoffice-welcome">Bem-vindo ao sistema de gestão de estágios</p>
+          {activeTab === 'dashboard' && (
+            <>
+              <p className="backoffice-welcome">Bem-vindo ao sistema de gestão de estágios</p>
 
-        {/* Stats Grid */}
-        <div className="backoffice-stats">
-          {stats.map((s) => (
-            <div key={s.label} className="backoffice-stat-card">
-              <div className="backoffice-stat-header">
-                <h3>{s.label}</h3>
-                <div className={`backoffice-stat-icon ${s.color}`}>
-                  <i className={`fas ${s.icon}`} />
-                </div>
-                <div className="backoffice-stat-value">{stats.ofertas}</div>
-              </div>
-              <div className="backoffice-stat-card">
-                <div className="backoffice-stat-header">
-                  <h3>Candidaturas</h3>
-                  <div className="backoffice-stat-icon amber">
-                    <i className="fas fa-hand-paper" />
+              {/* Stats Grid */}
+              <div className="backoffice-stats">
+                <div className="backoffice-stat-card">
+                  <div className="backoffice-stat-header">
+                    <h3>Alunos</h3>
+                    <div className="backoffice-stat-icon blue">
+                      <i className="fas fa-user-graduate" />
+                    </div>
                   </div>
+                  <div className="backoffice-stat-value">{stats.alunos}</div>
                 </div>
-                <div className="backoffice-stat-value">{stats.candidaturas}</div>
+                <div className="backoffice-stat-card">
+                  <div className="backoffice-stat-header">
+                    <h3>Professores</h3>
+                    <div className="backoffice-stat-icon green">
+                      <i className="fas fa-chalkboard-teacher" />
+                    </div>
+                  </div>
+                  <div className="backoffice-stat-value">{stats.professores}</div>
+                </div>
+                <div className="backoffice-stat-card">
+                  <div className="backoffice-stat-header">
+                    <h3>Empresas</h3>
+                    <div className="backoffice-stat-icon purple">
+                      <i className="fas fa-building" />
+                    </div>
+                  </div>
+                  <div className="backoffice-stat-value">{stats.empresas}</div>
+                </div>
+                <div className="backoffice-stat-card">
+                  <div className="backoffice-stat-header">
+                    <h3>Estágios</h3>
+                    <div className="backoffice-stat-icon teal">
+                      <i className="fas fa-briefcase" />
+                    </div>
+                  </div>
+                  <div className="backoffice-stat-value">{stats.estagios}</div>
+                </div>
+                <div className="backoffice-stat-card">
+                  <div className="backoffice-stat-header">
+                    <h3>Ofertas</h3>
+                    <div className="backoffice-stat-icon orange">
+                      <i className="fas fa-file-alt" />
+                    </div>
+                  </div>
+                  <div className="backoffice-stat-value">{stats.ofertas}</div>
+                </div>
+                <div className="backoffice-stat-card">
+                  <div className="backoffice-stat-header">
+                    <h3>Candidaturas</h3>
+                    <div className="backoffice-stat-icon amber">
+                      <i className="fas fa-hand-paper" />
+                    </div>
+                  </div>
+                  <div className="backoffice-stat-value">{stats.candidaturas}</div>
+                </div>
               </div>
-            </div>
-          </div>
-        )}
+            </>
+          )}
 
         {activeTab === 'alunos' && (
           <div className="backoffice-section">
@@ -561,14 +605,14 @@ export default function BackOffice() {
                         <button className="btn-action delete" onClick={() => handleDelete('estagios', est._id)}>
                           <i className="fas fa-trash" />
                         </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        )}
         </div>
       </main>
 
