@@ -202,7 +202,7 @@ export default function BackOffice() {
       <aside className="backoffice-sidebar">
         <div className="backoffice-logo">
           <i className="fas fa-graduation-cap" />
-          <span>ISTEC BackOffice</span>
+          <span>Practika BackOffice</span>
         </div>
         <ul className="backoffice-menu">
           <li className={`backoffice-menu-item ${activeTab === 'dashboard' ? 'active' : ''}`}>
@@ -241,82 +241,46 @@ export default function BackOffice() {
             </a>
           </li>
         </ul>
-        
-        <div className="backoffice-user">
-          <div className="backoffice-user-info">
-            <div className="backoffice-user-avatar">
-              <i className="fas fa-user" />
-            </div>
-            <div className="backoffice-user-details">
-              <h4>{userData?.nome || user?.email}</h4>
-              <p>{userData?.role || 'Admin'}</p>
-            </div>
-          </div>
-        </div>
       </aside>
 
       <main className="backoffice-main">
-        <div className="backoffice-header">
-          <h1>
-            {activeTab === 'dashboard' && 'Painel de Controlo'}
-            {activeTab === 'alunos' && 'Gestão de Alunos'}
-            {activeTab === 'professores' && 'Gestão de Professores'}
-            {activeTab === 'empresas' && 'Gestão de Empresas'}
-            {activeTab === 'ofertas' && 'Gestão de Ofertas'}
-            {activeTab === 'candidaturas' && 'Gestão de Candidaturas'}
-            {activeTab === 'estagios' && 'Gestão de Estágios'}
-          </h1>
-          <p>Bem-vindo ao sistema de gestão de estágios</p>
+        {/* Topbar */}
+        <div className="backoffice-topbar">
+          <div className="backoffice-topbar-left">
+            <h1>Painel de Controlo</h1>
+          </div>
+          <div className="backoffice-topbar-right">
+            <button className="backoffice-notification-btn">
+              <i className="fas fa-bell" />
+              <span className="backoffice-notification-badge">3</span>
+            </button>
+            <div className="backoffice-user-menu">
+              <div className="backoffice-user-avatar">
+                <i className="fas fa-user" />
+              </div>
+              <div className="backoffice-user-details">
+                <span className="backoffice-user-name">Coordenação</span>
+                <span className="backoffice-user-role">Admin</span>
+              </div>
+              <button className="backoffice-user-dropdown">
+                <i className="fas fa-chevron-down" />
+              </button>
+            </div>
+          </div>
         </div>
 
-        {loading && <div className="loading">A carregar...</div>}
-        {error && <div className="error-message">{error}</div>}
+        {/* Content */}
+        <div className="backoffice-content">
+          <p className="backoffice-welcome">Bem-vindo ao sistema de gestão de estágios</p>
 
-        {activeTab === 'dashboard' && (
-          <div className="dashboard-content">
-            <div className="backoffice-stats">
-              <div className="backoffice-stat-card">
-                <div className="backoffice-stat-header">
-                  <h3>Alunos</h3>
-                  <div className="backoffice-stat-icon blue">
-                    <i className="fas fa-user-graduate" />
-                  </div>
-                </div>
-                <div className="backoffice-stat-value">{stats.alunos}</div>
-              </div>
-              <div className="backoffice-stat-card">
-                <div className="backoffice-stat-header">
-                  <h3>Professores</h3>
-                  <div className="backoffice-stat-icon green">
-                    <i className="fas fa-chalkboard-teacher" />
-                  </div>
-                </div>
-                <div className="backoffice-stat-value">{stats.professores}</div>
-              </div>
-              <div className="backoffice-stat-card">
-                <div className="backoffice-stat-header">
-                  <h3>Empresas</h3>
-                  <div className="backoffice-stat-icon amber">
-                    <i className="fas fa-building" />
-                  </div>
-                </div>
-                <div className="backoffice-stat-value">{stats.empresas}</div>
-              </div>
-              <div className="backoffice-stat-card">
-                <div className="backoffice-stat-header">
-                  <h3>Estágios</h3>
-                  <div className="backoffice-stat-icon green">
-                    <i className="fas fa-briefcase" />
-                  </div>
-                </div>
-                <div className="backoffice-stat-value">{stats.estagios}</div>
-              </div>
-              <div className="backoffice-stat-card">
-                <div className="backoffice-stat-header">
-                  <h3>Ofertas</h3>
-                  <div className="backoffice-stat-icon blue">
-                    <i className="fas fa-file-alt" />
-                  </div>
+        {/* Stats Grid */}
+        <div className="backoffice-stats">
+          {stats.map((s) => (
+            <div key={s.label} className="backoffice-stat-card">
+              <div className="backoffice-stat-header">
+                <h3>{s.label}</h3>
+                <div className={`backoffice-stat-icon ${s.color}`}>
+                  <i className={`fas ${s.icon}`} />
                 </div>
                 <div className="backoffice-stat-value">{stats.ofertas}</div>
               </div>
@@ -597,14 +561,15 @@ export default function BackOffice() {
                         <button className="btn-action delete" onClick={() => handleDelete('estagios', est._id)}>
                           <i className="fas fa-trash" />
                         </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        )}
+        </div>
+        </div>
       </main>
 
       {showModal && (

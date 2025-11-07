@@ -41,54 +41,28 @@ function AuthShell() {
 
   return (
     <div className="app-container">
-      {/* Global header */}
-      <header className="app-header">
-        <nav className="app-nav">
-          <div className="app-logo">
-            <i className="fas fa-graduation-cap" />
-            <span>Practika</span>
-          </div>
-          <div className="app-nav-buttons">
-            {user ? (
-              <>
-                <button onClick={() => setPage('landing')} className={`app-nav-btn ${page === 'landing' ? 'active' : ''}`}>
-                  Início
-                </button>
-                <div className="user-menu">
-                  <button 
-                    className="user-menu-btn" 
-                    onClick={() => setShowDropdown(!showDropdown)}
-                  >
-                    Olá, {userData?.nome || user.email}
-                    <i className={`fas fa-chevron-${showDropdown ? 'up' : 'down'}`} style={{marginLeft: '0.5rem', fontSize: '0.75rem'}}></i>
-                  </button>
-                  {showDropdown && (
-                    <div className="user-dropdown">
-                      <button onClick={() => { setPage('backoffice'); setShowDropdown(false); }} className="dropdown-item">
-                        <i className="fas fa-cog"></i>
-                        BackOffice
-                      </button>
-                      <button onClick={handleLogout} className="dropdown-item logout">
-                        <i className="fas fa-sign-out-alt"></i>
-                        Sair
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              <>
-                <button onClick={openLogin} className="app-nav-btn primary">
-                  Entrar
-                </button>
-                <button onClick={openRegister} className="app-nav-btn">
-                  Registar
-                </button>
-              </>
-            )}
-          </div>
-        </nav>
-      </header>
+      {/* Global top nav - só na landing */}
+      {showHeader && (
+        <header className="app-header">
+          <nav className="app-nav">
+            <div className="app-logo">
+              <i className="fas fa-graduation-cap" />
+              <span>Practika</span>
+            </div>
+            <div className="app-nav-buttons">
+              <button onClick={() => setPage('backoffice')} className="app-nav-btn">
+                BackOffice (Dev)
+              </button>
+              <button onClick={() => setPage('login')} className="app-nav-btn primary">
+                Entrar
+              </button>
+              <button onClick={() => setPage('register')} className="app-nav-btn">
+                Registar
+              </button>
+            </div>
+          </nav>
+        </header>
+      )}
 
       <main>
         {page === 'landing' && <Landing onNavigateToLogin={openLogin} onNavigateToRegister={openRegister} />}

@@ -75,7 +75,7 @@
 .landing-hero {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #1e40af 100%);
   color: var(--white);
   padding: 5rem 2rem;
   text-align: center;
@@ -208,7 +208,7 @@
 }
 
 .landing-role-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #1e40af 100%);
   color: var(--white);
   padding: 2.5rem;
   border-radius: 20px;
@@ -217,15 +217,15 @@
 }
 
 .landing-role-card:nth-child(2) {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: linear-gradient(135deg, var(--color-success) 0%, #059669 100%);
 }
 
 .landing-role-card:nth-child(3) {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: linear-gradient(135deg, var(--color-accent) 0%, #d97706 100%);
 }
 
 .landing-role-card:nth-child(4) {
-  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
 }
 
 .landing-role-card:hover {
@@ -288,7 +288,7 @@
 /* CTA */
 .landing-cta {
   padding: 5rem 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--color-primary) 0%, #1e40af 100%);
   color: var(--white);
   text-align: center;
 }
@@ -322,7 +322,7 @@
 
 .landing-footer-section h3 {
   margin-bottom: 1rem;
-  color: var(--color-success);
+  color: var(--color-primary);
 }
 
 .landing-footer-section ul {
@@ -344,10 +344,14 @@
 
 .landing-footer-section p {
   margin-bottom: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .landing-footer-section i {
   margin-right: 0.5rem;
+  color: var(--color-primary);
+}
+  .landing-footer-section i {
   color: var(--color-success);
 }
 
