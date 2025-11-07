@@ -1,0 +1,93 @@
+:root {
+  /* Palette variables (dark mode defaults) */
+  --color-primary: #2563EB; /* Azul ISTEC - botões principais, links, títulos */
+  --color-success: #10B981; /* Verde Sucesso - estados positivos */
+  --color-accent: #F59E0B; /* Dourado Moderno - destaques */
+
+  --bg-light: #F9FAFB; /* Fundo Claro */
+  --bg-dark: #1F2937;  /* Fundo Escuro */
+
+  --text-primary: #111827; /* Texto Principal - Preto Suave (para light mode) */
+  --text-secondary: #6B7280; /* Texto Secundário - Cinza Neutro */
+  --white: #FFFFFF; /* Branco Puro - cards e contrastes */
+  --error: #EF4444; /* Erro/Aviso */
+
+  /* runtime variables (dark theme default)
+     --bg and --text will be used by components; they get swapped in light mode below */
+  --bg: var(--bg-dark);
+  --text: var(--white);
+
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color 0.25s, background-color 0.15s;
+}
+button:hover {
+  border-color: rgba(255,255,255,0.06);
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: var(--bg-light);
+    --text: var(--text-primary);
+  }
+  a:hover {
+    color: #747bff;
+  }
+}
+
+.btn {
+  background-color: var(--color-primary);
+  color: var(--white);
+  border: none;
+}
+
+.btn:hover {
+  filter: brightness(0.95);
+}
