@@ -43,31 +43,46 @@ export default function BackOffice() {
       const token = user ? await user.getIdToken() : null
       const headers = token ? { 'Authorization': `Bearer ${token}` } : {}
 
+      console.log('Fetching data from:', API_URL)
+      console.log('Headers:', headers)
+
       const [alunosRes, professoresRes, empresasRes, estagiosRes, ofertasRes, candidaturasRes] = await Promise.all([
-        fetch(`${API_URL}/alunos`, { headers }).then(r => r.json()).catch(() => []),
-        fetch(`${API_URL}/professores`, { headers }).then(r => r.json()).catch(() => []),
-        fetch(`${API_URL}/empresas`, { headers }).then(r => r.json()).catch(() => []),
-        fetch(`${API_URL}/estagios`, { headers }).then(r => r.json()).catch(() => []),
-        fetch(`${API_URL}/ofertas`, { headers }).then(r => r.json()).catch(() => []),
-        fetch(`${API_URL}/candidaturas`, { headers }).then(r => r.json()).catch(() => []),
+        fetch(`${API_URL}/alunos`, { headers }).then(async r => {
+          if (!r.ok) {
+            console.error('Alunos fetch failed:', r.status, r.statusText)
+            return []
+          }
+          const data = await r.json()
+          console.log('Alunos data:', data)
+          return data
+        }).catch(err => {
+          console.error('Alunos error:', err)
+          return []
+        }),
+        fetch(`${API_URL}/professores`, { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
+        fetch(`${API_URL}/empresas`, { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
+        fetch(`${API_URL}/estagios`, { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
+        fetch(`${API_URL}/ofertas`, { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
+        fetch(`${API_URL}/candidaturas`, { headers }).then(r => r.ok ? r.json() : []).catch(() => []),
       ])
 
-      setAlunos(alunosRes)
-      setProfessores(professoresRes)
-      setEmpresas(empresasRes)
-      setEstagios(estagiosRes)
-      setOfertas(ofertasRes)
-      setCandidaturas(candidaturasRes)
+      setAlunos(Array.isArray(alunosRes) ? alunosRes : [])
+      setProfessores(Array.isArray(professoresRes) ? professoresRes : [])
+      setEmpresas(Array.isArray(empresasRes) ? empresasRes : [])
+      setEstagios(Array.isArray(estagiosRes) ? estagiosRes : [])
+      setOfertas(Array.isArray(ofertasRes) ? ofertasRes : [])
+      setCandidaturas(Array.isArray(candidaturasRes) ? candidaturasRes : [])
 
       setStats({
-        alunos: alunosRes.length,
-        professores: professoresRes.length,
-        empresas: empresasRes.length,
-        estagios: estagiosRes.length,
-        ofertas: ofertasRes.length,
-        candidaturas: candidaturasRes.length
+        alunos: Array.isArray(alunosRes) ? alunosRes.length : 0,
+        professores: Array.isArray(professoresRes) ? professoresRes.length : 0,
+        empresas: Array.isArray(empresasRes) ? empresasRes.length : 0,
+        estagios: Array.isArray(estagiosRes) ? estagiosRes.length : 0,
+        ofertas: Array.isArray(ofertasRes) ? ofertasRes.length : 0,
+        candidaturas: Array.isArray(candidaturasRes) ? candidaturasRes.length : 0
       })
     } catch (err) {
+      console.error('FetchData error:', err)
       setError(err.message)
     } finally {
       setLoading(false)
@@ -327,35 +342,42 @@ export default function BackOffice() {
               </button>
             </div>
             <div className="backoffice-table-container">
-              <table className="backoffice-table">
-                <thead>
-                  <tr>
-                    <th>Nome</th>
-                    <th>Email</th>
-                    <th>Curso</th>
-                    <th>Competências</th>
-                    <th>Ações</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {alunos.map(aluno => (
-                    <tr key={aluno._id}>
-                      <td>{aluno.nome}</td>
-                      <td>{aluno.email}</td>
-                      <td>{aluno.curso}</td>
-                      <td>{aluno.competencias?.join(', ') || '—'}</td>
-                      <td>
-                        <button className="btn-action edit" onClick={() => handleEdit('alunos', aluno)}>
-                          <i className="fas fa-edit" />
-                        </button>
-                        <button className="btn-action delete" onClick={() => handleDelete('alunos', aluno._id)}>
-                          <i className="fas fa-trash" />
-                        </button>
-                      </td>
+              {alunos.length === 0 ? (
+                <div style={{ padding: '2rem', textAlign: 'center', color: '#666' }}>
+                  <i className="fas fa-users" style={{ fontSize: '3rem', marginBottom: '1rem', opacity: 0.3 }}></i>
+                  <p>Nenhum aluno encontrado. Clique em "Novo Aluno" para adicionar.</p>
+                </div>
+              ) : (
+                <table className="backoffice-table">
+                  <thead>
+                    <tr>
+                      <th>Nome</th>
+                      <th>Email</th>
+                      <th>Curso</th>
+                      <th>Competências</th>
+                      <th>Ações</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {alunos.map(aluno => (
+                      <tr key={aluno._id}>
+                        <td>{aluno.nome}</td>
+                        <td>{aluno.email}</td>
+                        <td>{aluno.curso}</td>
+                        <td>{aluno.competencias || '—'}</td>
+                        <td>
+                          <button className="btn-action edit" onClick={() => handleEdit('alunos', aluno)}>
+                            <i className="fas fa-edit" />
+                          </button>
+                          <button className="btn-action delete" onClick={() => handleDelete('alunos', aluno._id)}>
+                            <i className="fas fa-trash" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
             </div>
           </div>
         )}
@@ -464,7 +486,7 @@ export default function BackOffice() {
                   <tr>
                     <th>Título</th>
                     <th>Empresa</th>
-                    <th>Área</th>
+                    <th>Local</th>
                     <th>Duração</th>
                     <th>Ações</th>
                   </tr>
@@ -474,8 +496,8 @@ export default function BackOffice() {
                     <tr key={oferta._id}>
                       <td>{oferta.titulo}</td>
                       <td>{oferta.empresa?.nome || '—'}</td>
-                      <td>{oferta.area_estagio}</td>
-                      <td>{oferta.duracao_meses} meses</td>
+                      <td>{oferta.local || '—'}</td>
+                      <td>{oferta.duracao || '—'}</td>
                       <td>
                         <button className="btn-action edit" onClick={() => handleEdit('ofertas', oferta)}>
                           <i className="fas fa-edit" />
@@ -554,9 +576,9 @@ export default function BackOffice() {
                   <tr>
                     <th>Aluno</th>
                     <th>Professor Orientador</th>
-                    <th>Área</th>
                     <th>Data Início</th>
                     <th>Data Fim</th>
+                    <th>Estado</th>
                     <th>Ações</th>
                   </tr>
                 </thead>
@@ -565,9 +587,9 @@ export default function BackOffice() {
                     <tr key={est._id}>
                       <td>{est.aluno?.nome || '—'}</td>
                       <td>{est.professorOrientador?.nome || '—'}</td>
-                      <td>{est.area_estagio}</td>
-                      <td>{est.data_inicio ? new Date(est.data_inicio).toLocaleDateString() : '—'}</td>
-                      <td>{est.data_fim ? new Date(est.data_fim).toLocaleDateString() : '—'}</td>
+                      <td>{est.dataInicio ? new Date(est.dataInicio).toLocaleDateString() : '—'}</td>
+                      <td>{est.dataFim ? new Date(est.dataFim).toLocaleDateString() : '—'}</td>
+                      <td><span className={`status-badge ${est.estado === 'ATIVO' ? 'aceite' : 'pendente'}`}>{est.estado}</span></td>
                       <td>
                         <button className="btn-action edit" onClick={() => handleEdit('estagios', est)}>
                           <i className="fas fa-edit" />
@@ -600,7 +622,7 @@ export default function BackOffice() {
                   <input type="text" placeholder="Nome" value={formData.nome || ''} onChange={(e) => setFormData({ ...formData, nome: e.target.value })} required />
                   <input type="email" placeholder="Email" value={formData.email || ''} onChange={(e) => setFormData({ ...formData, email: e.target.value })} required />
                   <input type="text" placeholder="Curso" value={formData.curso || ''} onChange={(e) => setFormData({ ...formData, curso: e.target.value })} required />
-                  <input type="text" placeholder="Competências (separadas por vírgula)" value={formData.competencias?.join(', ') || ''} onChange={(e) => setFormData({ ...formData, competencias: e.target.value.split(',').map(s => s.trim()) })} />
+                  <input type="text" placeholder="Competências (ex: JavaScript, React, Node.js)" value={formData.competencias || ''} onChange={(e) => setFormData({ ...formData, competencias: e.target.value })} />
                 </>
               )}
               {modalType === 'professores' && (
@@ -624,8 +646,8 @@ export default function BackOffice() {
                     <option value="">Selecionar Empresa</option>
                     {empresas.map(emp => (<option key={emp._id} value={emp._id}>{emp.nome}</option>))}
                   </select>
-                  <input type="text" placeholder="Área de Estágio" value={formData.area_estagio || ''} onChange={(e) => setFormData({ ...formData, area_estagio: e.target.value })} required />
-                  <input type="number" placeholder="Duração (meses)" value={formData.duracao_meses || ''} onChange={(e) => setFormData({ ...formData, duracao_meses: parseInt(e.target.value) })} required />
+                  <input type="text" placeholder="Local" value={formData.local || ''} onChange={(e) => setFormData({ ...formData, local: e.target.value })} />
+                  <input type="text" placeholder="Duração (ex: 6 meses)" value={formData.duracao || ''} onChange={(e) => setFormData({ ...formData, duracao: e.target.value })} />
                   <textarea placeholder="Descrição" value={formData.descricao || ''} onChange={(e) => setFormData({ ...formData, descricao: e.target.value })} rows="4" />
                 </>
               )}
@@ -651,9 +673,8 @@ export default function BackOffice() {
                     <option value="">Selecionar Professor Orientador</option>
                     {professores.map(prof => (<option key={prof._id} value={prof._id}>{prof.nome}</option>))}
                   </select>
-                  <input type="text" placeholder="Área de Estágio" value={formData.area_estagio || ''} onChange={(e) => setFormData({ ...formData, area_estagio: e.target.value })} required />
-                  <input type="date" placeholder="Data Início" value={formData.data_inicio || ''} onChange={(e) => setFormData({ ...formData, data_inicio: e.target.value })} required />
-                  <input type="date" placeholder="Data Fim" value={formData.data_fim || ''} onChange={(e) => setFormData({ ...formData, data_fim: e.target.value })} required />
+                  <input type="date" placeholder="Data Início" value={formData.dataInicio || ''} onChange={(e) => setFormData({ ...formData, dataInicio: e.target.value })} required />
+                  <input type="date" placeholder="Data Fim" value={formData.dataFim || ''} onChange={(e) => setFormData({ ...formData, dataFim: e.target.value })} />
                 </>
               )}
               <div className="modal-actions">
