@@ -16,8 +16,8 @@ export default function Login({ onLoginSuccess, onSwitchToRegister }) {
 
     setLoading(true);
     try {
-      // Exemplo: substitui a URL pela tua API
-      const res = await fetch('/api/login', {
+      // Usa o endpoint correto do backend
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),

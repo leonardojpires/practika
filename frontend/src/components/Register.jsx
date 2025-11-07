@@ -6,6 +6,7 @@ export default function Register({ onRegisterSuccess, onSwitchToLogin }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [curso, setCurso] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -13,18 +14,21 @@ export default function Register({ onRegisterSuccess, onSwitchToLogin }) {
     e.preventDefault();
     setError(null);
 
-    if (!name) return setError('Preenche o nome.');
-    if (!email) return setError('Preenche o email.');
-    if (!password) return setError('Preenche a palavra-passe.');
-    if (password !== confirm) return setError('As palavras-passe não coincidem.');
+  if (!name) return setError('Preenche o nome.');
+  if (!email) return setError('Preenche o email.');
+  if (!password) return setError('Preenche a palavra-passe.');
+  if (password !== confirm) return setError('As palavras-passe não coincidem.');
+  if (!curso) return setError('Preenche o curso.');
 
     setLoading(true);
     try {
-      // Exemplo: substitui a URL pela tua API
-      const res = await fetch('/api/register', {
+      // Usa o endpoint correto do backend
+      const dados = { nome: name, email, password, role: 'Aluno', curso };
+      console.log('Dados enviados para registo:', dados);
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify(dados),
       });
 
       if (!res.ok) {
@@ -54,6 +58,17 @@ export default function Register({ onRegisterSuccess, onSwitchToLogin }) {
             onChange={(e) => setName(e.target.value)}
             className="auth-input"
             placeholder="O teu nome"
+            required
+          />
+        </label>
+
+        <label className="auth-label">
+          Curso
+          <input
+            value={curso}
+            onChange={(e) => setCurso(e.target.value)}
+            className="auth-input"
+            placeholder="O teu curso"
             required
           />
         </label>
