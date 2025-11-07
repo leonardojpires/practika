@@ -31,9 +31,12 @@ export default function App() {
           <nav className="app-nav">
             <div className="app-logo">
               <i className="fas fa-graduation-cap" />
-              <span>ISTEC Estágios</span>
+              <span>Practika</span>
             </div>
             <div className="app-nav-buttons">
+              <button onClick={() => setPage('backoffice')} className="app-nav-btn">
+                BackOffice (Dev)
+              </button>
               <button onClick={() => setPage('login')} className="app-nav-btn primary">
                 Entrar
               </button>

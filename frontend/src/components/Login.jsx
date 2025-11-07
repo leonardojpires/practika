@@ -16,7 +16,6 @@ export default function Login({ onLoginSuccess, onSwitchToRegister }) {
 
     setLoading(true);
     try {
-      // Usa o endpoint correto do backend
       const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -38,49 +37,86 @@ export default function Login({ onLoginSuccess, onSwitchToRegister }) {
   };
 
   return (
-    <div className="auth-card">
-      <h2>Entrar</h2>
-      <form onSubmit={handleSubmit} className="auth-form">
-        {error && <div className="auth-error">{error}</div>}
-
-        <label className="auth-label">
-          Email
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="auth-input"
-            placeholder="exemplo@dominio.com"
-            required
-          />
-        </label>
-
-        <label className="auth-label">
-          Palavra-passe
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="auth-input"
-            placeholder="••••••••"
-            required
-          />
-        </label>
-
-        <button type="submit" className="auth-button" disabled={loading}>
-          {loading ? 'A processar...' : 'Entrar'}
-        </button>
-
-        <div className="auth-footer">
-          <button
-            type="button"
-            className="auth-link"
-            onClick={() => onSwitchToRegister && onSwitchToRegister()}
-          >
-            Ainda não tens conta? Regista-te
-          </button>
+    <div className="auth-root">
+      {/* Left Side - Branding */}
+      <div className="auth-branding">
+        <div className="auth-brand-content">
+          <div className="auth-brand-logo">
+            <i className="fas fa-graduation-cap"></i>
+          </div>
+          <h1 className="auth-brand-title">Practika</h1>
+          <p className="auth-brand-subtitle">
+            Plataforma integrada de gestão de estágios curriculares e profissionais
+          </p>
+          <div className="auth-brand-features">
+            <div className="auth-brand-feature">
+              <i className="fas fa-shield-alt"></i>
+              <span>Autenticação segura</span>
+            </div>
+            <div className="auth-brand-feature">
+              <i className="fas fa-briefcase"></i>
+              <span>Gestão de estágios</span>
+            </div>
+            <div className="auth-brand-feature">
+              <i className="fas fa-chart-line"></i>
+              <span>Acompanhamento em tempo real</span>
+            </div>
+          </div>
         </div>
-      </form>
+      </div>
+
+      {/* Right Side - Form */}
+      <div className="auth-form-container">
+        <div className="auth-card">
+          <div className="auth-header">
+            <h2>Bem-vindo de volta</h2>
+            <p>Inicie sessão para aceder à sua conta</p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="auth-form">
+            {error && <div className="auth-error">{error}</div>}
+
+            <label className="auth-label">
+              Email
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="auth-input"
+                placeholder="exemplo@istec.pt"
+                required
+              />
+            </label>
+
+            <label className="auth-label">
+              Palavra-passe
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="auth-input"
+                placeholder="••••••••"
+                required
+              />
+            </label>
+
+            <button type="submit" className="auth-button" disabled={loading}>
+              {loading ? 'A processar...' : 'Entrar'}
+            </button>
+          </form>
+
+          <div className="auth-footer">
+            Ainda não tens conta?
+            <button
+              type="button"
+              className="auth-link"
+              onClick={() => onSwitchToRegister && onSwitchToRegister()}
+            >
+              Regista-te aqui
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

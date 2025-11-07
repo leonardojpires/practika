@@ -8,7 +8,7 @@ export default function Landing({ onNavigateToLogin, onNavigateToRegister }) {
         {/* Hero */}
         <section id="home" className="landing-hero">
           <div className="landing-hero-content">
-            <h1><i className="fas fa-graduation-cap"></i>Gestor de Estágios ISTEC</h1>
+            <h1><i className="fas fa-graduation-cap"></i>Practika</h1>
             <p>A plataforma que conecta alunos, empresas e professores orientadores num único sistema integrado de gestão de estágios curriculares e profissionais.</p>
             <div className="landing-hero-buttons">
               <button onClick={onNavigateToRegister} className="landing-btn landing-btn-primary">Registar Agora</button>
@@ -125,7 +125,7 @@ export default function Landing({ onNavigateToLogin, onNavigateToRegister }) {
         <section className="landing-cta">
           <div className="landing-container">
             <h2>Pronto para começar?</h2>
-            <p>Junte-se à plataforma que está a transformar a gestão de estágios no ISTEC</p>
+            <p>Junte-se à plataforma que está a transformar a gestão de estágios</p>
             <div className="landing-hero-buttons">
               <button onClick={onNavigateToRegister} className="landing-btn landing-btn-primary">Sou Aluno</button>
               <button onClick={onNavigateToRegister} className="landing-btn landing-btn-secondary">Sou Empresa</button>
@@ -138,7 +138,7 @@ export default function Landing({ onNavigateToLogin, onNavigateToRegister }) {
           <div className="landing-footer-content">
             <div className="landing-footer-section">
               <h3>Sobre</h3>
-              <p>Plataforma de gestão integrada de estágios curriculares e profissionais do ISTEC.</p>
+              <p>Plataforma de gestão integrada de estágios curriculares e profissionais.</p>
             </div>
             <div className="landing-footer-section">
               <h3>Links Rápidos</h3>
@@ -165,7 +165,7 @@ export default function Landing({ onNavigateToLogin, onNavigateToRegister }) {
             </div>
           </div>
           <div className="landing-footer-bottom">
-            © {new Date().getFullYear()} ISTEC - Gestor de Estágios. Todos os direitos reservados.
+            © {new Date().getFullYear()} Practika. Todos os direitos reservados.
           </div>
         </footer>
       </main>

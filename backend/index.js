@@ -1,6 +1,6 @@
 // Garantir que as variáveis de ambiente são carregadas antes de qualquer import
 // que possa depender de `process.env` (ex.: models que fazem mongoose.connect()).
-import "dotenv/config";
+import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";

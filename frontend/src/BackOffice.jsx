@@ -80,7 +80,7 @@ export default function BackOffice() {
       <aside className="backoffice-sidebar">
         <div className="backoffice-logo">
           <i className="fas fa-graduation-cap" />
-          <span>ISTEC BackOffice</span>
+          <span>Practika BackOffice</span>
         </div>
         <ul className="backoffice-menu">
           <li className="backoffice-menu-item active">
@@ -114,30 +114,38 @@ export default function BackOffice() {
             </a>
           </li>
         </ul>
-        
-        <div className="backoffice-user">
-          <div className="backoffice-user-info">
-            <div className="backoffice-user-avatar">
-              <i className="fas fa-user" />
-            </div>
-            <div className="backoffice-user-details">
-              <h4>Coordenação</h4>
-              <p>Admin</p>
-            </div>
-          </div>
-          <button className="backoffice-logout-btn">
-            <i className="fas fa-sign-out-alt" /> Sair
-          </button>
-        </div>
       </aside>
 
       {/* Main content */}
       <main className="backoffice-main">
-        {/* Header */}
-        <div className="backoffice-header">
-          <h1>Painel de Controlo</h1>
-          <p>Bem-vindo ao sistema de gestão de estágios</p>
+        {/* Topbar */}
+        <div className="backoffice-topbar">
+          <div className="backoffice-topbar-left">
+            <h1>Painel de Controlo</h1>
+          </div>
+          <div className="backoffice-topbar-right">
+            <button className="backoffice-notification-btn">
+              <i className="fas fa-bell" />
+              <span className="backoffice-notification-badge">3</span>
+            </button>
+            <div className="backoffice-user-menu">
+              <div className="backoffice-user-avatar">
+                <i className="fas fa-user" />
+              </div>
+              <div className="backoffice-user-details">
+                <span className="backoffice-user-name">Coordenação</span>
+                <span className="backoffice-user-role">Admin</span>
+              </div>
+              <button className="backoffice-user-dropdown">
+                <i className="fas fa-chevron-down" />
+              </button>
+            </div>
+          </div>
         </div>
+
+        {/* Content */}
+        <div className="backoffice-content">
+          <p className="backoffice-welcome">Bem-vindo ao sistema de gestão de estágios</p>
 
         {/* Stats Grid */}
         <div className="backoffice-stats">
@@ -212,6 +220,7 @@ export default function BackOffice() {
               </tbody>
             </table>
           </div>
+        </div>
         </div>
       </main>
     </div>
