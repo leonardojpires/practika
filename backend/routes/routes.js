@@ -1,11 +1,12 @@
 // routes.js
 import express from "express";
 import { Aluno, Professor, Empresa, Estagio, Candidatura } from "../models/models.js";
+import { verifyFirebaseToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// Listar todos os Alunos
-router.get("/alunos", async (req, res) => {
+// Listar todos os Alunos (requer autenticação)
+router.get("/alunos", verifyFirebaseToken, async (req, res) => {
   try {
     const alunos = await Aluno.find();
     res.json(alunos);
@@ -14,8 +15,8 @@ router.get("/alunos", async (req, res) => {
   }
 });
 
-// Listar todos os Professores
-router.get("/professores", async (req, res) => {
+// Listar todos os Professores (requer autenticação)
+router.get("/professores", verifyFirebaseToken, async (req, res) => {
   try {
     const professores = await Professor.find();
     res.json(professores);
@@ -24,8 +25,8 @@ router.get("/professores", async (req, res) => {
   }
 });
 
-// Listar todas as Empresas
-router.get("/empresas", async (req, res) => {
+// Listar todas as Empresas (requer autenticação)
+router.get("/empresas", verifyFirebaseToken, async (req, res) => {
   try {
     const empresas = await Empresa.find();
     res.json(empresas);
@@ -34,8 +35,8 @@ router.get("/empresas", async (req, res) => {
   }
 });
 
-// Listar todos os Estágios com aluno e professor populados
-router.get("/estagios", async (req, res) => {
+// Listar todos os Estágios com aluno e professor populados (requer autenticação)
+router.get("/estagios", verifyFirebaseToken, async (req, res) => {
   try {
     const estagios = await Estagio.find()
       .populate("aluno", "nome email curso competencias")
@@ -46,8 +47,8 @@ router.get("/estagios", async (req, res) => {
   }
 });
 
-// Listar todas as Candidaturas com aluno e oferta populados
-router.get("/candidaturas", async (req, res) => {
+// Listar todas as Candidaturas com aluno e oferta populados (requer autenticação)
+router.get("/candidaturas", verifyFirebaseToken, async (req, res) => {
   try {
     const candidaturas = await Candidatura.find()
       .populate("aluno", "nome email curso")
