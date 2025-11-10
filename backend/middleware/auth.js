@@ -1,4 +1,5 @@
 import { auth } from "../config/firebase.js";
+import { UserAccount } from "../models/models.js";
 
 /**
  * Middleware para verificar o token Firebase
@@ -18,14 +19,26 @@ export const verifyFirebaseToken = async (req, res, next) => {
     const token = authHeader.split("Bearer ")[1];
 
     // Verifica o token com Firebase Admin
-    const decodedToken = await auth.verifyIdToken(token);
+  const decodedToken = await auth.verifyIdToken(token);
     
     // Adiciona as informações do utilizador ao request
+    // role poderá vir em custom claims (decodedToken.role). Caso não venha, buscar na BD pelo discriminator
+    let role = decodedToken.role;
+    if (!role && decodedToken.email) {
+      try {
+        const user = await UserAccount.findOne({ email: decodedToken.email }).select("role");
+        role = user?.role;
+      } catch (e) {
+        // Se falhar o lookup, continua sem travar aqui; será tratado abaixo
+      }
+    }
+
     req.user = {
       uid: decodedToken.uid,
       email: decodedToken.email,
       emailVerified: decodedToken.email_verified,
       displayName: decodedToken.name,
+      role,
     };
 
     next();
@@ -49,12 +62,20 @@ export const optionalAuth = async (req, res, next) => {
     if (authHeader && authHeader.startsWith("Bearer ")) {
       const token = authHeader.split("Bearer ")[1];
       const decodedToken = await auth.verifyIdToken(token);
+      let role = decodedToken.role;
+      if (!role && decodedToken.email) {
+        try {
+          const user = await UserAccount.findOne({ email: decodedToken.email }).select("role");
+          role = user?.role;
+        } catch {}
+      }
       
       req.user = {
         uid: decodedToken.uid,
         email: decodedToken.email,
         emailVerified: decodedToken.email_verified,
         displayName: decodedToken.name,
+        role,
       };
     }
 

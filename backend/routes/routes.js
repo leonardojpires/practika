@@ -8,6 +8,8 @@ import {
   Candidatura,
   OfertaEstagio,
 } from "../models/models.js";
+import { verifyFirebaseToken } from "../middleware/auth.js";
+import { isAluno, isProfessor, isEmpresa, isGestor, requireRole } from "../middleware/roles.js";
 
 const router = express.Router();
 
@@ -153,7 +155,7 @@ router.get("/empresas/:id", async (req, res) => {
 });
 
 // Validar uma empresa (gestor irá usar)
-router.patch("/empresas/:id/validar", async (req, res) => {
+router.patch("/empresas/:id/validar", verifyFirebaseToken, isGestor, async (req, res) => {
   try {
     const empresa = await Empresa.findByIdAndUpdate(
       req.params.id,
@@ -200,7 +202,7 @@ router.get("/ofertas", async (req, res) => {
   }
 });
 
-router.post("/ofertas", async (req, res) => {
+router.post("/ofertas", verifyFirebaseToken, isEmpresa, async (req, res) => {
   try {
     const oferta = await OfertaEstagio.create(req.body);
     res.status(201).json(oferta);
@@ -266,7 +268,7 @@ router.get("/candidaturas", async (req, res) => {
 });
 
 // Criar candidatura
-router.post("/candidaturas", async (req, res) => {
+router.post("/candidaturas", verifyFirebaseToken, isAluno, async (req, res) => {
   try {
     // esperar body: { aluno: id, ofertaEstagio: id }
     const candidatura = await Candidatura.create(req.body);
@@ -277,7 +279,7 @@ router.post("/candidaturas", async (req, res) => {
 });
 
 // Atualizar estado da candidatura (ACEITE / RECUSADO / PENDENTE)
-router.patch("/candidaturas/:id/estado", async (req, res) => {
+router.patch("/candidaturas/:id/estado", verifyFirebaseToken, requireRole(["Empresa", "GestorCoordenacao"]), async (req, res) => {
   try {
     const { estado } = req.body; // espera-se string
     if (!["PENDENTE", "ACEITE", "RECUSADO"].includes(estado))
@@ -307,7 +309,7 @@ router.get("/estagios", async (req, res) => {
   }
 });
 
-router.post("/estagios", async (req, res) => {
+router.post("/estagios", verifyFirebaseToken, requireRole(["Professor", "GestorCoordenacao"]), async (req, res) => {
   try {
     const estagio = await Estagio.create(req.body);
     res.status(201).json(estagio);
