@@ -24,8 +24,8 @@ export default function Header() {
         <div className="app-nav-buttons">
           {user ? (
             <>
-              <button onClick={() => navigate('/')} className="app-nav-btn">
-                Início
+              <button onClick={() => navigate('/home')} className="app-nav-btn">
+                Minha Área
               </button>
               <div className="user-menu">
                 <button 
@@ -37,10 +37,20 @@ export default function Header() {
                 </button>
                 {showDropdown && (
                   <div className="user-dropdown">
-                    <button onClick={() => { navigate('/backoffice'); setShowDropdown(false); }} className="dropdown-item">
-                      <i className="fas fa-cog"></i>
-                      BackOffice
+                    <button onClick={() => { navigate('/home'); setShowDropdown(false); }} className="dropdown-item">
+                      <i className="fas fa-home"></i>
+                      Minha Área
                     </button>
+                    <button onClick={() => { navigate('/perfil'); setShowDropdown(false); }} className="dropdown-item">
+                      <i className="fas fa-user"></i>
+                      Perfil
+                    </button>
+                    {userData?.role === 'GestorCoordenacao' && (
+                      <button onClick={() => { navigate('/backoffice'); setShowDropdown(false); }} className="dropdown-item">
+                        <i className="fas fa-cog"></i>
+                        BackOffice
+                      </button>
+                    )}
                     <button onClick={handleLogout} className="dropdown-item logout">
                       <i className="fas fa-sign-out-alt"></i>
                       Sair

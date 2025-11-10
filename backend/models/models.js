@@ -29,6 +29,7 @@ const Professor = UserAccount.discriminator("Professor", professorSchema);
 
 const empresaSchema = new Schema({
   nif: { type: String, required: true, unique: true },
+  morada: { type: String },
   validada: { type: Boolean, default: false },
 });
 
@@ -47,7 +48,8 @@ const ofertaEstagioSchema = new Schema({
   duracao: { type: String },
   local: { type: String },
   empresa: { type: Schema.Types.ObjectId, ref: "Empresa", required: true },
-});
+  ativa: { type: Boolean, default: true }
+}, { timestamps: true });
 
 const OfertaEstagio = model("OfertaEstagio", ofertaEstagioSchema);
 

@@ -12,6 +12,18 @@ dist
 dist-ssr
 *.local
 
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Firebase config (if any custom overrides placed)
+firebase-config.local.json
+
+# Service account / secrets (should not be in frontend but defensive)
+*serviceAccount*.json
+*firebase-adminsdk*.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

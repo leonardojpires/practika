@@ -16,6 +16,22 @@ pnpm-debug.log*
 .env.test.local
 .env.production.local
 
+# Firebase service account keys (DO NOT COMMIT)
+serviceAccountKey.json
+*.firebase-adminsdk-*.json
+*firebase-adminsdk*.json
+*serviceAccount*.json
+*service-account*.json
+
+# Local credentials and keys
+*.pem
+*.pfx
+*.key
+*.crt
+
+# PowerShell helper scripts (optional)
+start-servers.ps1
+
 # =========================
 # Logs
 # =========================

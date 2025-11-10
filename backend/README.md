@@ -28,6 +28,39 @@ node seed.js
 ```
 ⚠️ **Atenção**: `seed.js` apaga todos os dados existentes e insere registos de exemplo.
 
+### Criar um Administrador
+Para converter um utilizador existente **OU criar um novo** Administrador:
+
+**Converter utilizador existente:**
+```bash
+node createAdmin.js <email_do_utilizador>
+```
+
+**Criar novo administrador:**
+```bash
+node createAdmin.js <email_novo> <nome_completo>
+```
+
+**Exemplos:**
+```bash
+# Converter utilizador existente
+node createAdmin.js deydecosta@teste.pt
+
+# Criar novo administrador
+node createAdmin.js admin@istec.pt "João Silva"
+node createAdmin.js gestao@istec.pt "Maria Santos"
+```
+
+**O script:**
+- ✅ Se o email **existe**: Converte o utilizador para Administrador
+- ✅ Se o email **não existe**: Cria novo utilizador Administrador
+- ✅ Cria no Firebase Authentication (se disponível)
+- ✅ Define senha temporária: `Admin123!` (para novos utilizadores)
+- ✅ Remove das listas de Alunos/Professores/Empresas
+- ✅ Permite acesso ao BackOffice
+
+⚠️ **Importante:** Altere a senha após o primeiro login!
+
 ### Iniciar o Servidor
 ```bash
 # Modo desenvolvimento (com nodemon)

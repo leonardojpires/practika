@@ -5,6 +5,7 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  sendPasswordResetEmail
 } from 'firebase/auth';
 
 const AuthContext = createContext(null);
@@ -18,12 +19,12 @@ export function AuthProvider({ children }){
   const [userData, setUserData] = useState(null); // dados vindos do backend (role, etc.)
   const [loading, setLoading] = useState(true);
 
-  async function registerAluno({ nome, email, password, curso }){
+  async function register({ nome, email, password, role, ...extraFields }){
     // Chama backend para criar utilizador (Firebase + Mongo)
     const res = await fetch(`${import.meta.env.VITE_API_URL}/auth/register`,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ nome, email, password, role:'Aluno', curso })
+      body: JSON.stringify({ nome, email, password, role, ...extraFields })
     });
     if(!res.ok){
       const payload = await res.json().catch(()=>({}));
@@ -34,6 +35,11 @@ export function AuthProvider({ children }){
     return await res.json();
   }
 
+  // Manter registerAluno para retrocompatibilidade
+  async function registerAluno({ nome, email, password, curso }){
+    return register({ nome, email, password, role: 'Aluno', curso });
+  }
+
   async function login(email, password){
     await signInWithEmailAndPassword(auth, email, password);
     // token e verificação backend ocorre no listener
@@ -42,6 +48,10 @@ export function AuthProvider({ children }){
   async function logout(){
     await signOut(auth);
     setUserData(null);
+  }
+
+  async function resetPassword(email){
+    await sendPasswordResetEmail(auth, email);
   }
 
   async function fetchBackendUser(currentUser){
@@ -57,7 +67,7 @@ export function AuthProvider({ children }){
         setUserData(null);
       }
     } catch(err){
-      console.error('Erro a obter utilizador backend', err);
+      setUserData(null);
     }
   }
 
@@ -74,7 +84,7 @@ export function AuthProvider({ children }){
     return ()=>unsub();
   },[]);
 
-  const value = { user, userData, registerAluno, login, logout };
+  const value = { user, userData, register, registerAluno, login, logout, resetPassword, fetchBackendUser };
 
   return (
     <AuthContext.Provider value={value}>

@@ -59,6 +59,20 @@ router.put("/alunos/:id", async (req, res) => {
   }
 });
 
+// Atualizar parcialmente aluno (PATCH)
+router.patch("/alunos/:id", verifyFirebaseToken, async (req, res) => {
+  try {
+    const aluno = await Aluno.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!aluno) return res.status(404).json({ error: "Aluno não encontrado" });
+    res.json(aluno);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 // Remover aluno
 router.delete("/alunos/:id", async (req, res) => {
   try {
@@ -101,6 +115,21 @@ router.get("/professores/:id", async (req, res) => {
 });
 
 router.put("/professores/:id", async (req, res) => {
+  try {
+    const professor = await Professor.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!professor)
+      return res.status(404).json({ error: "Professor não encontrado" });
+    res.json(professor);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// Atualizar parcialmente professor (PATCH)
+router.patch("/professores/:id", verifyFirebaseToken, async (req, res) => {
   try {
     const professor = await Professor.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -182,6 +211,20 @@ router.put("/empresas/:id", async (req, res) => {
   }
 });
 
+// Atualizar parcialmente empresa (PATCH)
+router.patch("/empresas/:id", verifyFirebaseToken, async (req, res) => {
+  try {
+    const empresa = await Empresa.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!empresa) return res.status(404).json({ error: "Empresa não encontrada" });
+    res.json(empresa);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 router.delete("/empresas/:id", async (req, res) => {
   try {
     const empresa = await Empresa.findByIdAndDelete(req.params.id);
@@ -234,11 +277,30 @@ router.put("/ofertas/:id", async (req, res) => {
   }
 });
 
-router.delete("/ofertas/:id", async (req, res) => {
+// Atualizar parcialmente uma oferta (ex: ativar/desativar)
+router.patch("/ofertas/:id", verifyFirebaseToken, isEmpresa, async (req, res) => {
+  try {
+    const oferta = await OfertaEstagio.findByIdAndUpdate(
+      req.params.id, 
+      req.body, 
+      { new: true, runValidators: true }
+    );
+    if (!oferta) return res.status(404).json({ error: "Oferta não encontrada" });
+    res.json(oferta);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+router.delete("/ofertas/:id", verifyFirebaseToken, isEmpresa, async (req, res) => {
   try {
     const oferta = await OfertaEstagio.findByIdAndDelete(req.params.id);
     if (!oferta) return res.status(404).json({ error: "Oferta não encontrada" });
-    res.json({ message: "Oferta removida" });
+    
+    // Apagar também todas as candidaturas associadas
+    await Candidatura.deleteMany({ ofertaEstagio: req.params.id });
+    
+    res.json({ message: "Oferta e candidaturas associadas removidas com sucesso" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -261,6 +323,38 @@ router.get("/candidaturas", async (req, res) => {
     const candidaturas = await Candidatura.find()
       .populate("aluno", "nome email curso")
       .populate({ path: "ofertaEstagio", populate: { path: "empresa" } });
+    res.json(candidaturas);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Listar candidaturas de um aluno específico
+router.get("/candidaturas/aluno/:alunoId", verifyFirebaseToken, async (req, res) => {
+  try {
+    const candidaturas = await Candidatura.find({ aluno: req.params.alunoId })
+      .populate("aluno", "nome email curso")
+      .populate({ path: "ofertaEstagio", populate: { path: "empresa" } })
+      .sort({ createdAt: -1 });
+    res.json(candidaturas);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Listar candidaturas para ofertas de uma empresa específica
+router.get("/candidaturas/empresa/:empresaId", verifyFirebaseToken, async (req, res) => {
+  try {
+    // Primeiro buscar todas as ofertas desta empresa
+    const ofertas = await OfertaEstagio.find({ empresa: req.params.empresaId });
+    const ofertaIds = ofertas.map(o => o._id);
+    
+    // Depois buscar candidaturas dessas ofertas
+    const candidaturas = await Candidatura.find({ ofertaEstagio: { $in: ofertaIds } })
+      .populate("aluno", "nome email curso")
+      .populate({ path: "ofertaEstagio", populate: { path: "empresa" } })
+      .sort({ createdAt: -1 });
+    
     res.json(candidaturas);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -292,6 +386,17 @@ router.patch("/candidaturas/:id/estado", verifyFirebaseToken, requireRole(["Empr
     );
     if (!candidatura) return res.status(404).json({ error: "Candidatura não encontrada" });
     res.json(candidatura);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Apagar candidatura
+router.delete("/candidaturas/:id", verifyFirebaseToken, async (req, res) => {
+  try {
+    const candidatura = await Candidatura.findByIdAndDelete(req.params.id);
+    if (!candidatura) return res.status(404).json({ error: "Candidatura não encontrada" });
+    res.json({ message: "Candidatura apagada com sucesso" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -62,6 +62,7 @@ router.post("/register", async (req, res) => {
         user = new Empresa({ 
           ...dadosBase, 
           nif: dadosEspecificos.nif || "",
+          morada: dadosEspecificos.morada || "",
           validada: false 
         });
         break;
@@ -148,7 +149,6 @@ router.post("/login", async (req, res) => {
 router.get("/verify", async (req, res) => {
   try {
     const authHeader = req.headers.authorization;
-    
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({ 
         error: "Token de autenticação não fornecido" 
@@ -167,17 +167,32 @@ router.get("/verify", async (req, res) => {
       });
     }
 
+    // Preparar dados do utilizador com todos os campos
+    const userData = {
+      uid: decodedToken.uid,
+      email: decodedToken.email,
+      nome: user.nome,
+      role: user.role,
+      mongoId: user._id,
+    };
+
+    // Adicionar campos específicos baseado no role
+    if (user.role === 'Aluno') {
+      userData.curso = user.curso;
+      userData.competencias = user.competencias;
+      userData.cv = user.cv;
+    } else if (user.role === 'Professor') {
+      userData.departamento = user.departamento;
+    } else if (user.role === 'Empresa') {
+      userData.nif = user.nif;
+      userData.morada = user.morada;
+      userData.validada = user.validada;
+    }
+
     res.json({
-      user: {
-        uid: decodedToken.uid,
-        email: decodedToken.email,
-        nome: user.nome,
-        role: user.role,
-        mongoId: user._id,
-      },
+      user: userData,
     });
   } catch (error) {
-    console.error("Erro na verificação:", error);
     res.status(403).json({ 
       error: "Token inválido ou expirado",
       details: error.message 

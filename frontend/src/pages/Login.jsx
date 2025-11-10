@@ -23,7 +23,7 @@ export default function Login() {
       // Usa o login do AuthContext (Firebase)
       await login(email, password);
       setLoading(false);
-      navigate('/backoffice');
+      navigate('/home');
     } catch (err) {
       setLoading(false);
       setError(err.message || 'Erro no login');
