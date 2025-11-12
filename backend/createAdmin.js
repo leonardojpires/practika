@@ -13,39 +13,44 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { UserAccount, GestorCoordenacao } from './models/models.js';
 import admin from 'firebase-admin';
-import { readFileSync } from 'fs';
+import './config/firebase.js';
+import crypto from 'crypto';
 
 dotenv.config();
 
 // Usar a mesma URI da API (MONGO_URI). Fallback para practika_db
 const MONGO_URI = process.env.MONGO_URI || process.env.MONGODB_URI || 'mongodb://localhost:27017/practika_db';
 
-// Inicializar Firebase Admin
+// Verificar Firebase Admin sem expor nomes de ficheiros sensíveis
 let firebaseAvailable = false;
 try {
-  const serviceAccount = JSON.parse(
-    readFileSync('./practika-app-1fcf9-firebase-adminsdk-fbsvc-08e6142e6c.json', 'utf8')
-  );
-  
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
-  });
-  firebaseAvailable = true;
-  console.log('Firebase Admin configurado com sucesso\n');
+  if (admin.apps && admin.apps.length > 0) {
+    firebaseAvailable = true;
+    console.log('Firebase Admin configurado (variáveis de ambiente)\n');
+  } else {
+    throw new Error('Firebase Admin não inicializado');
+  }
 } catch (error) {
   console.log('\nERRO: Firebase Admin nao esta configurado!');
   console.log('============================================================');
-  console.log('Para criar utilizadores com senha, precisas do Firebase configurado.');
-  console.log('\nPASSOS PARA CONFIGURAR:');
-  console.log('   1. Vai a: https://console.firebase.google.com');
-  console.log('   2. Seleciona o teu projeto');
-  console.log('   3. Vai a Project Settings > Service Accounts');
-  console.log('   4. Clica em "Generate new private key"');
-  console.log('   5. Guarda o ficheiro como "serviceAccountKey.json"');
-  console.log('   6. Coloca na pasta: ' + process.cwd());
-  console.log('   7. Executa este script novamente');
+  console.log('Para criar utilizadores com senha, configura via variáveis de ambiente:');
+  console.log(' - FIREBASE_PROJECT_ID');
+  console.log(' - FIREBASE_PRIVATE_KEY_ID');
+  console.log(' - FIREBASE_PRIVATE_KEY');
+  console.log(' - FIREBASE_CLIENT_EMAIL');
+  console.log(' - FIREBASE_CLIENT_ID');
+  console.log(' - FIREBASE_CLIENT_CERT_URL');
+  console.log('\nOu coloca um ficheiro de credenciais padrão (serviceAccountKey.json) na pasta backend/');
   console.log('============================================================\n');
   process.exit(1);
+}
+
+// Gera uma password aleatória alfanumérica com o tamanho indicado
+function generatePassword(length = 8) {
+  // Gera bytes aleatórios e converte para base64, mantendo apenas [A-Za-z0-9]
+  const raw = crypto.randomBytes(Math.ceil(length * 1.5)).toString('base64');
+  const clean = raw.replace(/[^a-zA-Z0-9]/g, '');
+  return clean.slice(0, length);
 }
 
 async function createOrUpdateAdmin(email, nome) {
@@ -114,37 +119,38 @@ async function createOrUpdateAdmin(email, nome) {
       // Utilizador nao existe - criar novo
       console.log('\nUtilizador nao encontrado na BD. A criar novo Administrador...');
 
-      const nomeAdmin = nome || 'Administrador';
-      const senhaTemporaria = 'Admin123!';
+  const nomeAdmin = nome || 'Administrador';
+  const senhaTemporaria = generatePassword(8);
       
       // Criar no Firebase primeiro
       let firebaseUid = null;
       let firebaseUserCreated = false;
       
-      try {
-        // Verificar se ja existe no Firebase
-        let existingFirebaseUser = null;
         try {
-          existingFirebaseUser = await admin.auth().getUserByEmail(email);
-          console.log('Utilizador ja existe no Firebase Authentication');
-          firebaseUid = existingFirebaseUser.uid;
-          console.log('   UID: ' + firebaseUid);
-        } catch (notFoundError) {
-          // Utilizador nao existe no Firebase, criar novo
-          const firebaseUser = await admin.auth().createUser({
-            email: email,
-            password: senhaTemporaria,
-            displayName: nomeAdmin,
-            emailVerified: true
-          });
-          firebaseUid = firebaseUser.uid;
-          firebaseUserCreated = true;
-          console.log('Utilizador criado no Firebase Authentication');
-          console.log('   UID: ' + firebaseUid);
-          console.log('   Email: ' + email);
-          console.log('   Senha temporaria: ' + senhaTemporaria);
-        }
-      } catch (firebaseError) {
+          // Verificar se ja existe no Firebase
+          let existingFirebaseUser = null;
+          try {
+            existingFirebaseUser = await admin.auth().getUserByEmail(email);
+            console.log('Utilizador ja existe no Firebase Authentication');
+            firebaseUid = existingFirebaseUser.uid;
+            console.log('   UID: ' + firebaseUid);
+            // Redefinir password para uma nova aleatória, garantindo acesso imediato
+            await admin.auth().updateUser(firebaseUid, { password: senhaTemporaria });
+            console.log('   Password redefinida para acesso inicial.');
+          } catch (notFoundError) {
+            // Utilizador nao existe no Firebase, criar novo
+            const firebaseUser = await admin.auth().createUser({
+              email: email,
+              password: senhaTemporaria,
+              displayName: nomeAdmin,
+              emailVerified: true
+            });
+            firebaseUid = firebaseUser.uid;
+            firebaseUserCreated = true;
+            console.log('Utilizador criado no Firebase Authentication');
+            console.log('   UID: ' + firebaseUid);
+          }
+        } catch (firebaseError) {
         console.error('Erro ao criar/verificar no Firebase: ' + firebaseError.message);
         process.exit(1);
       }
@@ -168,12 +174,8 @@ async function createOrUpdateAdmin(email, nome) {
       console.log('LOGIN PRONTO! Podes aceder com:');
       console.log('============================================================');
       console.log('   Email: ' + email);
-      if (firebaseUserCreated) {
-        console.log('   Senha: ' + senhaTemporaria);
-        console.log('\n   IMPORTANTE: Altere a senha apos o primeiro login!');
-      } else {
-        console.log('   Senha: (usa a senha que ja tens configurada no Firebase)');
-      }
+      console.log('   Senha temporaria: ' + senhaTemporaria);
+      console.log('\n   IMPORTANTE: Altere a senha apos o primeiro login!');
       console.log('\n   URL: http://localhost:5173/login');
       console.log('   Acesso: BackOffice disponivel apos login');
       console.log('============================================================');
