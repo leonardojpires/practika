@@ -6,8 +6,9 @@ services:
     env: node
     region: frankfurt
     plan: free
-    buildCommand: cd backend && npm install
-    startCommand: cd backend && npm start
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
     envVars:
       - key: NODE_VERSION
         value: 18.17.0
@@ -33,8 +34,9 @@ services:
     env: static
     region: frankfurt
     plan: free
-    buildCommand: cd frontend && npm install && npm run build
-    staticPublishPath: ./frontend/dist
+    rootDir: frontend
+    buildCommand: npm install; npm run build
+    staticPublishPath: ./dist
     envVars:
       - key: NODE_VERSION
         value: 18.17.0

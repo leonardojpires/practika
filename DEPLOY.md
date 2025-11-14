@@ -18,10 +18,10 @@
    - **Name:** `practika-backend`
    - **Region:** Frankfurt (ou mais próximo)
    - **Branch:** `main`
-   - **Root Directory:** Deixar vazio (ou `.`)
+   - **Root Directory:** `backend`
    - **Runtime:** Node
-   - **Build Command:** `cd backend && npm install`
-   - **Start Command:** `cd backend && npm start`
+   - **Build Command:** `npm install`
+   - **Start Command:** `npm start`
    - **Plan:** Free
 
 ### Passo 2: Adicionar Environment Variables
@@ -66,9 +66,9 @@ FIREBASE_CLIENT_CERT_URL=https://www.googleapis.com/robot/v1/metadata/x509/fireb
    - **Name:** `practika-frontend`
    - **Region:** Frankfurt
    - **Branch:** `main`
-   - **Root Directory:** Deixar vazio
-   - **Build Command:** `cd frontend && npm install && npm run build`
-   - **Publish Directory:** `frontend/dist`
+   - **Root Directory:** `frontend`
+   - **Build Command:** `npm install; npm run build`
+   - **Publish Directory:** `dist`
 
 ### Passo 2: Adicionar Environment Variables
 
