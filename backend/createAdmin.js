@@ -55,7 +55,7 @@ function generatePassword(length = 8) {
 
 async function createOrUpdateAdmin(email, nome) {
   try {
-  await mongoose.connect(MONGO_URI);
+    await mongoose.connect(MONGO_URI);
     console.log('Conectado a base de dados MongoDB');
 
     if (!email) {
@@ -105,7 +105,7 @@ async function createOrUpdateAdmin(email, nome) {
       
       // Verificar se tem senha no Firebase
       try {
-  const firebaseUser = await admin.auth().getUser(existingUser.firebaseUid);
+        const firebaseUser = await admin.auth().getUser(existingUser.firebaseUid);
         console.log('\nInformacao de Login:');
         console.log('   Email: ' + email);
         console.log('   Senha: (usa a senha que ja tens configurada)');
@@ -119,38 +119,38 @@ async function createOrUpdateAdmin(email, nome) {
       // Utilizador nao existe - criar novo
       console.log('\nUtilizador nao encontrado na BD. A criar novo Administrador...');
 
-  const nomeAdmin = nome || 'Administrador';
-  const senhaTemporaria = generatePassword(8);
+      const nomeAdmin = nome || 'Administrador';
+      const senhaTemporaria = generatePassword(8);
       
       // Criar no Firebase primeiro
       let firebaseUid = null;
       let firebaseUserCreated = false;
       
+      try {
+        // Verificar se ja existe no Firebase
+        let existingFirebaseUser = null;
         try {
-          // Verificar se ja existe no Firebase
-          let existingFirebaseUser = null;
-          try {
-            existingFirebaseUser = await admin.auth().getUserByEmail(email);
-            console.log('Utilizador ja existe no Firebase Authentication');
-            firebaseUid = existingFirebaseUser.uid;
-            console.log('   UID: ' + firebaseUid);
-            // Redefinir password para uma nova aleatória, garantindo acesso imediato
-            await admin.auth().updateUser(firebaseUid, { password: senhaTemporaria });
-            console.log('   Password redefinida para acesso inicial.');
-          } catch (notFoundError) {
-            // Utilizador nao existe no Firebase, criar novo
-            const firebaseUser = await admin.auth().createUser({
-              email: email,
-              password: senhaTemporaria,
-              displayName: nomeAdmin,
-              emailVerified: true
-            });
-            firebaseUid = firebaseUser.uid;
-            firebaseUserCreated = true;
-            console.log('Utilizador criado no Firebase Authentication');
-            console.log('   UID: ' + firebaseUid);
-          }
-        } catch (firebaseError) {
+          existingFirebaseUser = await admin.auth().getUserByEmail(email);
+          console.log('Utilizador ja existe no Firebase Authentication');
+          firebaseUid = existingFirebaseUser.uid;
+          console.log('   UID: ' + firebaseUid);
+          // Redefinir password para uma nova aleatória, garantindo acesso imediato
+          await admin.auth().updateUser(firebaseUid, { password: senhaTemporaria });
+          console.log('   Password redefinida para acesso inicial.');
+        } catch (notFoundError) {
+          // Utilizador nao existe no Firebase, criar novo
+          const firebaseUser = await admin.auth().createUser({
+            email: email,
+            password: senhaTemporaria,
+            displayName: nomeAdmin,
+            emailVerified: true
+          });
+          firebaseUid = firebaseUser.uid;
+          firebaseUserCreated = true;
+          console.log('Utilizador criado no Firebase Authentication');
+          console.log('   UID: ' + firebaseUid);
+        }
+      } catch (firebaseError) {
         console.error('Erro ao criar/verificar no Firebase: ' + firebaseError.message);
         process.exit(1);
       }
